@@ -1,18 +1,21 @@
+
 # Gatherly AI — Architecture & Engineering Specification
 
 ## 1. Architectural Overview & Separation of Concerns
 
-Gatherly AI follows a strict **Clean Hexagonal Architecture** separating core domain logic, application orchestration, presentation components, and infrastructure adapters.
+Gatherly AI separates presentation components, application use cases, domain logic, and infrastructure adapters.
 
 ```mermaid
 graph TD
-  subgraph Presentation ["Presentation Layer (React, Accessible UI, Tailwind)"]
+  subgraph Presentation["Presentation Layer (React, Accessible UI, Tailwind)"]
     Pages["Pages (Welcome, Planner Studio)"]
     Components["Components (Dashboard, Budget, Timeline, Vendors, What-If)"]
     Theme["Kawaii Scrapbook Design System"]
+    Pages --> Components
+    Components --> Theme
   end
 
-  subgraph Application ["Application Layer (Use Cases & Orchestration)"]
+  subgraph Application["Application Layer (Use Cases & Orchestration)"]
     CreateEventUC["Create Event"]
     RecalculateBudgetUC["Recalculate Budget"]
     SimulateWhatIfUC["Simulate What-If Constraints"]
@@ -20,27 +23,48 @@ graph TD
     ManageVendorsUC["Manage Vendors & Tasks"]
   end
 
-  subgraph Domain ["Domain Layer (Pure TypeScript, Zero External Dependencies)"]
+  subgraph Domain["Domain Layer (Pure TypeScript Business Logic)"]
     EventEntity["Event Entity & Aggregates"]
-    BudgetEngine["Deterministic Budget Engine (Minor Units)"]
-    TimelineEngine["Deterministic Timeline & Cycle Detection"]
+    BudgetEngine["Deterministic Budget Engine"]
+    TimelineEngine["Timeline & Cycle Detection"]
     ConstraintEngine["Constraint-Aware Replanning Engine"]
-    ValidationSchemas["Zod Domain Schemas & Value Objects"]
+    ValidationSchemas["Zod Schemas & Value Objects"]
   end
 
-  subgraph Infrastructure ["Infrastructure Layer (Adapters & External Systems)"]
-    StorageAdapter["Storage Adapter (Versioned LocalStorage/IndexedDB)"]
+  subgraph Infrastructure["Infrastructure Layer (Adapters & External Systems)"]
+    StorageAdapter["Versioned Browser Storage Adapter"]
     AIProvider["AI Provider Interface"]
     OllamaAdapter["Local Ollama Adapter (qwen2.5:3b)"]
-    DemoAdapter["Deterministic Demo Provider (Production-Safe)"]
-    RemoteAdapter["FastAPI Proxy Adapter"]
+    DemoAdapter["Deterministic Demo Provider"]
+    RemoteAdapter["Optional FastAPI Proxy Adapter"]
   end
 
-  Presentation --> Application
-  Application --> Domain
-  Application --> Infrastructure
-  Infrastructure ..|> Domain
+  Pages --> CreateEventUC
+  Components --> RecalculateBudgetUC
+  Components --> SimulateWhatIfUC
+  Components --> ApplyChangesUC
+  Components --> ManageVendorsUC
+
+  CreateEventUC --> EventEntity
+  RecalculateBudgetUC --> BudgetEngine
+  SimulateWhatIfUC --> ConstraintEngine
+  ApplyChangesUC --> ConstraintEngine
+  ManageVendorsUC --> TimelineEngine
+
+  BudgetEngine --> ValidationSchemas
+  TimelineEngine --> ValidationSchemas
+  ConstraintEngine --> BudgetEngine
+  ConstraintEngine --> TimelineEngine
+
+  Application --> StorageAdapter
+  Application --> AIProvider
+  AIProvider --> OllamaAdapter
+  AIProvider --> DemoAdapter
+  AIProvider --> RemoteAdapter
 ```
+
+**Architecture principle:** Core business rules should remain independent of UI frameworks and external AI providers. Infrastructure integrations should be accessed through clearly defined interfaces.
+
 
 ---
 
