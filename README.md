@@ -67,7 +67,7 @@ graph TD
   Presentation["Presentation Layer (React 18 + Tailwind + Accessible UI)"] --> Application["Application Layer (Use Cases & Orchestration)"]
   Application --> Domain["Pure Domain Layer (Zero Dependencies, Integer Minor Units)"]
   Application --> Infrastructure["Infrastructure Layer (LocalStorage, Ollama, Demo Adapter)"]
-  Infrastructure ..|> Domain
+  Infrastructure --> Domain
 ```
 
 - **Clean Hexagonal Architecture**: Domain logic contains zero dependencies on React, browser APIs, or external AI providers.
@@ -121,12 +121,11 @@ Gatherly AI provides seamless runtime switching between AI engines:
 
 ## 📁 Repository Documentation Index
 
-- [Architecture & Domain Model](file:///docs/architecture.md)
-- [Security Specification & Threat Model](file:///docs/security.md)
-- [Automated Testing Strategy & Report](file:///docs/testing.md)
-- [Local Ollama qwen2.5:3b Measured Benchmark](file:///docs/ai-benchmark.md)
-- [Deployment & Environment Configuration](file:///docs/deployment.md)
-
+- [Architecture & Domain Model](docs/architecture.md)
+- [Security Specification](docs/security.md)
+- [Testing Strategy](docs/testing.md)
+- [AI Benchmark](docs/ai-benchmark.md)
+- [Deployment Guide](docs/deployment.md)
 ---
 
 ## 📋 Competition Acceptance Verification
