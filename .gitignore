@@ -1,48 +1,88 @@
-# Node dependencies
+# ==========================================
+# GATHERLY AI — GITIGNORE CONFIGURATION
+# ==========================================
+
+# 1. Dependencies
 node_modules/
 .pnp
 .pnp.js
+.yarn/cache/
 
-# Build artifacts
+# 2. Build Outputs & Compilations
 dist/
 dist-ssr/
 build/
+out/
 *.local
 *.tsbuildinfo
 vite.config.d.ts
 vite.config.js
 
-# Testing and coverage
+# 3. Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+
+# 4. Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 5. Testing & Coverage
 coverage/
 test-results/
 playwright-report/
 blob-report/
 .nyc_output/
+playwright/.cache/
 
-# Python / Backend
+# 6. Python & FastAPI Backend
 __pycache__/
 *.py[cod]
 *$py.class
 venv/
 .venv/
 env/
-.env
-.env.local
-.env.production
+ENV/
+*.egg-info/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# OS / Editor files
+# 7. Operating System Files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Thumbs.db:encryptable
+Desktop.ini
+$RECYCLE.BIN/
+
+# 8. IDE & Editor Configs
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.sublime-project
+*.sublime-workspace
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-.idea/
-.vscode/
-*.log
 
-# Temp
+# 9. Databases & Local Storage Dumps
+*.sqlite
+*.sqlite3
+*.db
+
+# 10. Temporary & Scratch Files
 tmp/
 temp/
+scratch/
