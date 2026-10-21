@@ -1,0 +1,48 @@
+# Node dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build artifacts
+dist/
+dist-ssr/
+build/
+*.local
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.js
+
+# Testing and coverage
+coverage/
+test-results/
+playwright-report/
+blob-report/
+.nyc_output/
+
+# Python / Backend
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+.env.local
+.env.production
+.pytest_cache/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.idea/
+.vscode/
+*.log
+
+# Temp
+tmp/
+temp/

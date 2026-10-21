@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="20" fill="#FFD9E8"/>
+  <rect x="2" y="2" width="60" height="60" rx="18" fill="none" stroke="#554564" stroke-width="3"/>
+  <!-- Bow Motif -->
+  <path d="M 32 30 C 26 22, 12 24, 16 34 C 20 42, 28 34, 32 32 Z" fill="#DCCEFF" stroke="#554564" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M 32 30 C 38 22, 52 24, 48 34 C 44 42, 36 34, 32 32 Z" fill="#DCCEFF" stroke="#554564" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Ribbons -->
+  <path d="M 28 34 Q 22 46 18 48 Q 24 45 29 38" fill="#DCCEFF" stroke="#554564" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M 36 34 Q 42 46 46 48 Q 40 45 35 38" fill="#DCCEFF" stroke="#554564" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Knot -->
+  <circle cx="32" cy="32" r="5" fill="#FFF0B8" stroke="#554564" stroke-width="2.5"/>
+  <!-- Sparkles -->
+  <path d="M 48 14 Q 49 18 53 19 Q 49 20 48 24 Q 47 20 43 19 Q 47 18 48 14 Z" fill="#FFF0B8"/>
+</svg>

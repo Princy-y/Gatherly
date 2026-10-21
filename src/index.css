@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --cream-bg: #FFF9F5;
+    --lavender-card: #DCCEFF;
+    --plum-text: #554564;
+    --lavender-border: #B7A3D6;
+  }
+
+  body {
+    background-color: #FFF9F5;
+    color: #554564;
+    font-family: 'Quicksand', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, .font-heading {
+    font-family: 'Comfortaa', 'Quicksand', cursive, sans-serif;
+  }
+
+  /* Custom focus outline for accessibility */
+  *:focus-visible {
+    outline: 3px solid #554564;
+    outline-offset: 2px;
+  }
+}
+
+/* Kawaii Scrapbook Washi Tape Effect */
+.washi-tape-pink {
+  background-color: rgba(255, 217, 232, 0.85);
+  box-shadow: 0 1px 3px rgba(85, 69, 100, 0.15);
+  transform: rotate(-1.5deg);
+  border-left: 2px dashed #B7A3D6;
+  border-right: 2px dashed #B7A3D6;
+}
+
+.washi-tape-mint {
+  background-color: rgba(213, 243, 223, 0.85);
+  box-shadow: 0 1px 3px rgba(85, 69, 100, 0.15);
+  transform: rotate(1.2deg);
+  border-left: 2px dashed #B7A3D6;
+  border-right: 2px dashed #B7A3D6;
+}
+
+.washi-tape-yellow {
+  background-color: rgba(255, 240, 184, 0.85);
+  box-shadow: 0 1px 3px rgba(85, 69, 100, 0.15);
+  transform: rotate(-0.8deg);
+  border-left: 2px dashed #B7A3D6;
+  border-right: 2px dashed #B7A3D6;
+}
+
+/* Tactile Neo-Brutalist Buttons */
+.btn-kawaii {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 3px 3px 0px #554564;
+}
+
+.btn-kawaii:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #554564;
+}
+
+.btn-kawaii:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #554564;
+}
+
+.btn-kawaii:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: 1px 1px 0px #554564;
+}
+
+/* Scrapbook Card */
+.scrapbook-card {
+  background-color: #FFFFFF;
+  border: 2px solid #554564;
+  border-radius: 1.25rem;
+  box-shadow: 4px 4px 0px #DCCEFF;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.scrapbook-card:hover {
+  box-shadow: 5px 5px 0px #B7A3D6;
+}
+
+/* Sticker badge */
+.kawaii-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1.5px solid #554564;
+  box-shadow: 2px 2px 0px rgba(85, 69, 100, 0.25);
+}
+
+/* Subtle reduced-motion media query */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
