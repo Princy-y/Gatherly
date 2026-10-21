@@ -1,8 +1,42 @@
 # 🌸 Gatherly AI — Competition-Grade Event Planning Assistant
 
 > **Constraint-Aware Event Replanning with Kawaii Scrapbook Neo-Brutalism & Zero-Hallucination Deterministic Math**
+>
+> 🔗 **Repository**: [https://github.com/Princy-y/Gatherly](https://github.com/Princy-y/Gatherly.git)
 
 Gatherly AI is a high-grade, accessible event planning web application designed to organize **Weddings**, **Birthdays**, and **Community Gatherings**. Unlike superficial chatbot wrappers, Gatherly AI is built on a clean hexagonal domain architecture where AI acts as an advisory component bounded by deterministic financial arithmetic, dependency graph validation, and explicit user-approval gates.
+
+---
+
+## 📸 Application Preview & Visual Walkthrough
+
+Experience the **Kawaii Scrapbook Neo-Brutalism** design system in action:
+
+### 1. 🌸 Event Dashboard
+*Live countdown timer, 4 financial status cards (Budget Cap, Estimated Spend, Invoiced Actuals, Net Surplus/Deficit), upcoming deadline tracks, and celebration triggers.*
+
+![Gatherly AI Dashboard](./public/screenshots/dashboard.png)
+
+---
+
+### 2. 💰 Pastel Budget Studio
+*Zero-rounding-error accounting in integer minor units (paise), category distribution progress bars, inline invoiced cost editing, and priority-guided savings recommendations.*
+
+![Gatherly AI Budget Studio](./public/screenshots/budget-studio.png)
+
+---
+
+### 3. 📅 Timeline & Milestone Planner
+*Topologically ordered preparation tasks, automated cycle detection, prerequisite dependency badges, status toggles, and dynamic schedule shifting when event dates move.*
+
+![Gatherly AI Timeline Planner](./public/screenshots/timeline.png)
+
+---
+
+### 4. 🔮 Signature Feature: Constraint-Aware What-If Replanner
+*Interactive constraint sliders (budget cuts, guest count surges, date acceleration), instant mathematical consequence calculation, side-by-side Before/After trade-off proposals, and explicit user-approval verification.*
+
+![Gatherly AI What-If Replanner](./public/screenshots/what-if-replanner.png)
 
 ---
 
@@ -40,7 +74,7 @@ graph TD
 - **Integer Minor Currency Units**: All financial calculations are stored in integer **paise** (1 INR = 100 paise) to eliminate floating-point arithmetic errors.
 - **Directed Graph & Cycle Detection**: Timeline tasks form an acyclic dependency graph with automated circular dependency detection (`detectCycle`).
 - **Runtime Schema Validation**: Every AI response passes strict **Zod** schema validation before reaching application state.
-- **Zero-Secret Public Repo (< 10 MB)**: Fully tracked repository size is **0.46 MB** (well under the 10 MB constraint).
+- **Zero-Secret Public Repo (< 10 MB)**: Fully tracked repository size including screenshots is well under **1.1 MB** (strictly below the 10 MB constraint).
 
 ---
 
@@ -48,8 +82,8 @@ graph TD
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/your-username/gatherly-ai.git
-cd gatherly-ai
+git clone https://github.com/Princy-y/Gatherly.git
+cd Gatherly
 npm install
 ```
 
@@ -107,7 +141,7 @@ Gatherly AI provides seamless runtime switching between AI engines:
 | **Responsive & Accessible UI** | Semantic HTML, ARIA dialogs, keyboard navigation, visible focus indicators, and reduced-motion rules. | ✅ Verified |
 | **Zero secrets committed** | Zero API keys stored in repo; `.env.example` contains only placeholders. | ✅ Verified |
 | **Production works without laptop** | Equipped with deterministic `DemoAdapter` with zero local daemon dependencies. | ✅ Verified |
-| **Repository Size < 10 MB** | Verified via `npm run audit:size`: Tracked repository size is **0.46 MB**. | ✅ Verified |
+| **Repository Size < 10 MB** | Verified via audit script: Total tracked repository size with screenshots is **~1.05 MB**. | ✅ Verified |
 
 ---
 
