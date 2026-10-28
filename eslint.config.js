@@ -27,6 +27,7 @@ export default [
       'react-refresh': reactRefresh,
     },
     rules: {
+      ...tseslint.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
@@ -48,6 +49,14 @@ export default [
     },
   },
   {
-    ignores: ['dist/**', 'node_modules/**', 'coverage/**', 'playwright-report/**', 'vite.config.js', 'vite.config.d.ts', '**/*.tsbuildinfo'],
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      'coverage/**',
+      'playwright-report/**',
+      'vite.config.js',
+      'vite.config.d.ts',
+      '**/*.tsbuildinfo',
+    ],
   },
 ];
