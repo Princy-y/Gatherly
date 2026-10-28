@@ -9,6 +9,280 @@ import {
   InspirationStudioOutput,
 } from './aiInterface';
 
+function generateWeddingPlan(params: PlanGenerationParams): AIGeneratedPlanOutput {
+  const budget = params.budgetLimitPaise;
+  return {
+    themeTitle: 'Pastel Dream Mandap & Fairytale Garden',
+    conceptDescription:
+      'A soft, romantic celebration blending traditional rituals with whimsical pastel florals, acoustic music, and curated gourmet dining.',
+    colorPalette: ['#DCCEFF', '#FFD9E8', '#FFF0B8', '#D5F3DF', '#554564'],
+    recommendedExpenses: [
+      {
+        category: 'venue',
+        name: 'Open Lawn & Banquet Hall Booking',
+        estimatedCostPaise: Math.round(budget * 0.32),
+        priority: 'essential',
+        notes: 'Requires 40% advance deposit',
+      },
+      {
+        category: 'catering',
+        name: 'Live Culinary Stations & Welcome Mocktails',
+        estimatedCostPaise: Math.round(budget * 0.3),
+        priority: 'essential',
+        notes: `Calculated for ~${params.guestCount} guests`,
+      },
+      {
+        category: 'photography',
+        name: 'Cinematic Video & Candid Photography Team',
+        estimatedCostPaise: Math.round(budget * 0.14),
+        priority: 'preferred',
+        notes: 'Includes drone footage and edited highlight reel',
+      },
+      {
+        category: 'decoration',
+        name: 'Fairytale Floral Arch & Fairy Light Canopy',
+        estimatedCostPaise: Math.round(budget * 0.12),
+        priority: 'preferred',
+        notes: 'Eco-friendly biodegradable decor elements',
+      },
+      {
+        category: 'entertainment',
+        name: 'Acoustic Fusion Band & Sound System',
+        estimatedCostPaise: Math.round(budget * 0.07),
+        priority: 'optional',
+        notes: 'Evening cocktail entertainment',
+      },
+      {
+        category: 'invitations',
+        name: 'Handcrafted Watercolor Digital & Print E-Invites',
+        estimatedCostPaise: Math.round(budget * 0.05),
+        priority: 'optional',
+      },
+    ],
+    recommendedTasks: [
+      {
+        title: 'Confirm and Lock Venue Contract',
+        description: 'Visit venue, inspect parking & accessibility, pay security deposit.',
+        daysBeforeEvent: 60,
+        priority: 'high',
+        vendorCategory: 'venue',
+      },
+      {
+        title: 'Schedule Menu Tasting & Finalize Catering Headcount',
+        description: 'Taste signature appetizers, finalize live counters and dietary options.',
+        daysBeforeEvent: 30,
+        priority: 'high',
+        vendorCategory: 'catering',
+      },
+      {
+        title: 'Pre-wedding Shoot & Shot List Briefing',
+        description: 'Brief photographer on family portraits and must-capture emotional moments.',
+        daysBeforeEvent: 20,
+        priority: 'medium',
+        vendorCategory: 'photography',
+      },
+      {
+        title: 'Send Digital Invites & RSVP Tracking Link',
+        description: 'Dispatch kawaii illustrated wedding invites via WhatsApp and email.',
+        daysBeforeEvent: 25,
+        priority: 'medium',
+        vendorCategory: 'invitations',
+      },
+      {
+        title: 'Finalize Soundcheck and Sangeet Tracklist',
+        description: 'Coordinate mic setup, battery backup, and playlist sequence.',
+        daysBeforeEvent: 7,
+        priority: 'low',
+        vendorCategory: 'entertainment',
+      },
+    ],
+    recommendedVendors: [
+      {
+        category: 'venue',
+        title: 'Lawn & Heritage Courtyard',
+        requirements: `Capacity: ${params.guestCount}+ pax, parking, bridal suite`,
+        estimatedCostPaise: Math.round(budget * 0.32),
+      },
+      {
+        category: 'catering',
+        title: 'Artisan Gourmet Caterers',
+        requirements: 'Vegetarian + Global Live Counters, 2 Welcome Drinks',
+        estimatedCostPaise: Math.round(budget * 0.3),
+      },
+      {
+        category: 'photography',
+        title: 'Studio Lens & Moments',
+        requirements: '2 Candid + 1 Traditional + Drone operator',
+        estimatedCostPaise: Math.round(budget * 0.14),
+      },
+    ],
+  };
+}
+
+function generateBirthdayPlan(params: PlanGenerationParams): AIGeneratedPlanOutput {
+  const budget = params.budgetLimitPaise;
+  return {
+    themeTitle: 'Whimsical Kawaii Sugar Wonderland',
+    conceptDescription:
+      'A cheerful, heartwarming birthday gathering with customized dessert tables, polaroid photo booths, and interactive party games.',
+    colorPalette: ['#FFD9E8', '#FFF0B8', '#CDEBFF', '#D5F3DF', '#554564'],
+    recommendedExpenses: [
+      {
+        category: 'venue',
+        name: 'Boutique Party Cafe or Terrace Garden',
+        estimatedCostPaise: Math.round(budget * 0.3),
+        priority: 'essential',
+      },
+      {
+        category: 'catering',
+        name: 'Gourmet Sliders, Finger Foods & Custom Fondant Cake',
+        estimatedCostPaise: Math.round(budget * 0.35),
+        priority: 'essential',
+        notes: '2-tier custom designed birthday cake',
+      },
+      {
+        category: 'decoration',
+        name: 'Pastel Balloon Garland & Custom Photo Backdrop',
+        estimatedCostPaise: Math.round(budget * 0.18),
+        priority: 'preferred',
+      },
+      {
+        category: 'entertainment',
+        name: 'Interactive Game Host / Magic & Polaroid Station',
+        estimatedCostPaise: Math.round(budget * 0.12),
+        priority: 'preferred',
+      },
+      {
+        category: 'miscellaneous',
+        name: 'Kawaii Goodie Bags & Personalized Favors',
+        estimatedCostPaise: Math.round(budget * 0.05),
+        priority: 'optional',
+      },
+    ],
+    recommendedTasks: [
+      {
+        title: 'Reserve Cafe or Terrace Venue',
+        description: 'Ensure adequate seating and sound permissions.',
+        daysBeforeEvent: 21,
+        priority: 'high',
+        vendorCategory: 'venue',
+      },
+      {
+        title: 'Order Themed Cake & Custom Flavor Selection',
+        description: 'Specify dietary restrictions and delivery timing.',
+        daysBeforeEvent: 14,
+        priority: 'high',
+        vendorCategory: 'catering',
+      },
+      {
+        title: 'Finalize Balloon Color Scheme & Backdrop Banner',
+        description: 'Provide birthday person’s favorite pastel color palette.',
+        daysBeforeEvent: 10,
+        priority: 'medium',
+        vendorCategory: 'decoration',
+      },
+      {
+        title: 'Send Interactive RSVP Cards',
+        description: 'Gather dietary preferences and song requests.',
+        daysBeforeEvent: 12,
+        priority: 'medium',
+      },
+    ],
+    recommendedVendors: [
+      {
+        category: 'catering',
+        title: 'Sugar Blossom Bakery & Cafe',
+        requirements: 'Eggless options, 2-tier design, delivery to venue',
+        estimatedCostPaise: Math.round(budget * 0.35),
+      },
+      {
+        category: 'decoration',
+        title: 'Cloud Nine Pastel Balloons & Props',
+        requirements: 'Organic balloon garland with marquee number sign',
+        estimatedCostPaise: Math.round(budget * 0.18),
+      },
+    ],
+  };
+}
+
+function generateCommunityPlan(params: PlanGenerationParams): AIGeneratedPlanOutput {
+  const budget = params.budgetLimitPaise;
+  return {
+    themeTitle: 'Community Harmony & Eco Festival',
+    conceptDescription:
+      'An inclusive neighborhood carnival focusing on sustainability, local talent, community bonding, and family activities.',
+    colorPalette: ['#D5F3DF', '#FFF0B8', '#CDEBFF', '#554564', '#FFF9F5'],
+    recommendedExpenses: [
+      {
+        category: 'permits',
+        name: 'Civic Authority / Park Board Permit & Sanitation',
+        estimatedCostPaise: Math.round(budget * 0.15),
+        priority: 'essential',
+      },
+      {
+        category: 'venue',
+        name: 'Community Center / Public Park Rental',
+        estimatedCostPaise: Math.round(budget * 0.25),
+        priority: 'essential',
+      },
+      {
+        category: 'catering',
+        name: 'Community Refreshment Kiosk & Chai Counters',
+        estimatedCostPaise: Math.round(budget * 0.3),
+        priority: 'essential',
+      },
+      {
+        category: 'entertainment',
+        name: 'PA Sound System, Microphones & Stage Risers',
+        estimatedCostPaise: Math.round(budget * 0.18),
+        priority: 'preferred',
+      },
+      {
+        category: 'invitations',
+        name: 'Banners, Flyers & Digital Community Posters',
+        estimatedCostPaise: Math.round(budget * 0.12),
+        priority: 'optional',
+      },
+    ],
+    recommendedTasks: [
+      {
+        title: 'File Civic Permit & Health Safety Approvals',
+        description: 'Submit crowd safety plan and facility permissions.',
+        daysBeforeEvent: 30,
+        priority: 'high',
+        vendorCategory: 'permits',
+      },
+      {
+        title: 'Confirm Park Pavilion Setup & Power Supply',
+        description: 'Verify generator backup and accessible ramps.',
+        daysBeforeEvent: 15,
+        priority: 'high',
+        vendorCategory: 'venue',
+      },
+      {
+        title: 'Organize Volunteer Teams & Safety Briefing',
+        description: 'Assign welcome desk, first aid, and refreshment shifts.',
+        daysBeforeEvent: 7,
+        priority: 'medium',
+      },
+    ],
+    recommendedVendors: [
+      {
+        category: 'permits',
+        title: 'Municipal Ward Administration',
+        requirements: 'Public gathering permit, waste management clearance',
+        estimatedCostPaise: Math.round(budget * 0.15),
+      },
+      {
+        category: 'entertainment',
+        title: 'Acoustic Sound & Stage Hire',
+        requirements: 'Wireless mics, 1000W PA speakers, technician on site',
+        estimatedCostPaise: Math.round(budget * 0.18),
+      },
+    ],
+  };
+}
+
 export class DemoAdapter implements IAIProvider {
   async getStatus(): Promise<AIProviderStatus> {
     return {
@@ -29,279 +303,13 @@ export class DemoAdapter implements IAIProvider {
     const start = performance.now();
     await this.delay(350, signal);
 
-    const budget = params.budgetLimitPaise;
-    const isWedding = params.eventType === 'wedding';
-    const isBirthday = params.eventType === 'birthday';
-
     let data: AIGeneratedPlanOutput;
-
-    if (isWedding) {
-      data = {
-        themeTitle: 'Pastel Dream Mandap & Fairytale Garden',
-        conceptDescription:
-          'A soft, romantic celebration blending traditional rituals with whimsical pastel florals, acoustic music, and curated gourmet dining.',
-        colorPalette: ['#DCCEFF', '#FFD9E8', '#FFF0B8', '#D5F3DF', '#554564'],
-        recommendedExpenses: [
-          {
-            category: 'venue',
-            name: 'Open Lawn & Banquet Hall Booking',
-            estimatedCostPaise: Math.round(budget * 0.32),
-            priority: 'essential',
-            notes: 'Requires 40% advance deposit',
-          },
-          {
-            category: 'catering',
-            name: 'Live Culinary Stations & Welcome Mocktails',
-            estimatedCostPaise: Math.round(budget * 0.3),
-            priority: 'essential',
-            notes: `Calculated for ~${params.guestCount} guests`,
-          },
-          {
-            category: 'photography',
-            name: 'Cinematic Video & Candid Photography Team',
-            estimatedCostPaise: Math.round(budget * 0.14),
-            priority: 'preferred',
-            notes: 'Includes drone footage and edited highlight reel',
-          },
-          {
-            category: 'decoration',
-            name: 'Fairytale Floral Arch & Fairy Light Canopy',
-            estimatedCostPaise: Math.round(budget * 0.12),
-            priority: 'preferred',
-            notes: 'Eco-friendly biodegradable decor elements',
-          },
-          {
-            category: 'entertainment',
-            name: 'Acoustic Fusion Band & Sound System',
-            estimatedCostPaise: Math.round(budget * 0.07),
-            priority: 'optional',
-            notes: 'Evening cocktail entertainment',
-          },
-          {
-            category: 'invitations',
-            name: 'Handcrafted Watercolor Digital & Print E-Invites',
-            estimatedCostPaise: Math.round(budget * 0.05),
-            priority: 'optional',
-          },
-        ],
-        recommendedTasks: [
-          {
-            title: 'Confirm and Lock Venue Contract',
-            description: 'Visit venue, inspect parking & accessibility, pay security deposit.',
-            daysBeforeEvent: 60,
-            priority: 'high',
-            vendorCategory: 'venue',
-          },
-          {
-            title: 'Schedule Menu Tasting & Finalize Catering Headcount',
-            description: 'Taste signature appetizers, finalize live counters and dietary options.',
-            daysBeforeEvent: 30,
-            priority: 'high',
-            vendorCategory: 'catering',
-          },
-          {
-            title: 'Pre-wedding Shoot & Shot List Briefing',
-            description:
-              'Brief photographer on family portraits and must-capture emotional moments.',
-            daysBeforeEvent: 20,
-            priority: 'medium',
-            vendorCategory: 'photography',
-          },
-          {
-            title: 'Send Digital Invites & RSVP Tracking Link',
-            description: 'Dispatch kawaii illustrated wedding invites via WhatsApp and email.',
-            daysBeforeEvent: 25,
-            priority: 'medium',
-            vendorCategory: 'invitations',
-          },
-          {
-            title: 'Finalize Soundcheck and Sangeet Tracklist',
-            description: 'Coordinate mic setup, battery backup, and playlist sequence.',
-            daysBeforeEvent: 7,
-            priority: 'low',
-            vendorCategory: 'entertainment',
-          },
-        ],
-        recommendedVendors: [
-          {
-            category: 'venue',
-            title: 'Lawn & Heritage Courtyard',
-            requirements: `Capacity: ${params.guestCount}+ pax, parking, bridal suite`,
-            estimatedCostPaise: Math.round(budget * 0.32),
-          },
-          {
-            category: 'catering',
-            title: 'Artisan Gourmet Caterers',
-            requirements: 'Vegetarian + Global Live Counters, 2 Welcome Drinks',
-            estimatedCostPaise: Math.round(budget * 0.3),
-          },
-          {
-            category: 'photography',
-            title: 'Studio Lens & Moments',
-            requirements: '2 Candid + 1 Traditional + Drone operator',
-            estimatedCostPaise: Math.round(budget * 0.14),
-          },
-        ],
-      };
-    } else if (isBirthday) {
-      data = {
-        themeTitle: 'Whimsical Kawaii Sugar Wonderland',
-        conceptDescription:
-          'A cheerful, heartwarming birthday gathering with customized dessert tables, polaroid photo booths, and interactive party games.',
-        colorPalette: ['#FFD9E8', '#FFF0B8', '#CDEBFF', '#D5F3DF', '#554564'],
-        recommendedExpenses: [
-          {
-            category: 'venue',
-            name: 'Boutique Party Cafe or Terrace Garden',
-            estimatedCostPaise: Math.round(budget * 0.3),
-            priority: 'essential',
-          },
-          {
-            category: 'catering',
-            name: 'Gourmet Sliders, Finger Foods & Custom Fondant Cake',
-            estimatedCostPaise: Math.round(budget * 0.35),
-            priority: 'essential',
-            notes: '2-tier custom designed birthday cake',
-          },
-          {
-            category: 'decoration',
-            name: 'Pastel Balloon Garland & Custom Photo Backdrop',
-            estimatedCostPaise: Math.round(budget * 0.18),
-            priority: 'preferred',
-          },
-          {
-            category: 'entertainment',
-            name: 'Interactive Game Host / Magic & Polaroid Station',
-            estimatedCostPaise: Math.round(budget * 0.12),
-            priority: 'preferred',
-          },
-          {
-            category: 'miscellaneous',
-            name: 'Kawaii Goodie Bags & Personalized Favors',
-            estimatedCostPaise: Math.round(budget * 0.05),
-            priority: 'optional',
-          },
-        ],
-        recommendedTasks: [
-          {
-            title: 'Reserve Cafe or Terrace Venue',
-            description: 'Ensure adequate seating and sound permissions.',
-            daysBeforeEvent: 21,
-            priority: 'high',
-            vendorCategory: 'venue',
-          },
-          {
-            title: 'Order Themed Cake & Custom Flavor Selection',
-            description: 'Specify dietary restrictions and delivery timing.',
-            daysBeforeEvent: 14,
-            priority: 'high',
-            vendorCategory: 'catering',
-          },
-          {
-            title: 'Finalize Balloon Color Scheme & Backdrop Banner',
-            description: 'Provide birthday person’s favorite pastel color palette.',
-            daysBeforeEvent: 10,
-            priority: 'medium',
-            vendorCategory: 'decoration',
-          },
-          {
-            title: 'Send Interactive RSVP Cards',
-            description: 'Gather dietary preferences and song requests.',
-            daysBeforeEvent: 12,
-            priority: 'medium',
-          },
-        ],
-        recommendedVendors: [
-          {
-            category: 'catering',
-            title: 'Sugar Blossom Bakery & Cafe',
-            requirements: 'Eggless options, 2-tier design, delivery to venue',
-            estimatedCostPaise: Math.round(budget * 0.35),
-          },
-          {
-            category: 'decoration',
-            title: 'Cloud Nine Pastel Balloons & Props',
-            requirements: 'Organic balloon garland with marquee number sign',
-            estimatedCostPaise: Math.round(budget * 0.18),
-          },
-        ],
-      };
+    if (params.eventType === 'wedding') {
+      data = generateWeddingPlan(params);
+    } else if (params.eventType === 'birthday') {
+      data = generateBirthdayPlan(params);
     } else {
-      // Community event
-      data = {
-        themeTitle: 'Community Harmony & Eco Festival',
-        conceptDescription:
-          'An inclusive neighborhood carnival focusing on sustainability, local talent, community bonding, and family activities.',
-        colorPalette: ['#D5F3DF', '#FFF0B8', '#CDEBFF', '#554564', '#FFF9F5'],
-        recommendedExpenses: [
-          {
-            category: 'permits',
-            name: 'Civic Authority / Park Board Permit & Sanitation',
-            estimatedCostPaise: Math.round(budget * 0.15),
-            priority: 'essential',
-          },
-          {
-            category: 'venue',
-            name: 'Community Center / Public Park Rental',
-            estimatedCostPaise: Math.round(budget * 0.25),
-            priority: 'essential',
-          },
-          {
-            category: 'catering',
-            name: 'Community Refreshment Kiosk & Chai Counters',
-            estimatedCostPaise: Math.round(budget * 0.3),
-            priority: 'essential',
-          },
-          {
-            category: 'entertainment',
-            name: 'PA Sound System, Microphones & Stage Risers',
-            estimatedCostPaise: Math.round(budget * 0.18),
-            priority: 'preferred',
-          },
-          {
-            category: 'invitations',
-            name: 'Banners, Flyers & Digital Community Posters',
-            estimatedCostPaise: Math.round(budget * 0.12),
-            priority: 'optional',
-          },
-        ],
-        recommendedTasks: [
-          {
-            title: 'File Civic Permit & Health Safety Approvals',
-            description: 'Submit crowd safety plan and facility permissions.',
-            daysBeforeEvent: 30,
-            priority: 'high',
-            vendorCategory: 'permits',
-          },
-          {
-            title: 'Confirm Park Pavilion Setup & Power Supply',
-            description: 'Verify generator backup and accessible ramps.',
-            daysBeforeEvent: 15,
-            priority: 'high',
-            vendorCategory: 'venue',
-          },
-          {
-            title: 'Organize Volunteer Teams & Safety Briefing',
-            description: 'Assign welcome desk, first aid, and refreshment shifts.',
-            daysBeforeEvent: 7,
-            priority: 'medium',
-          },
-        ],
-        recommendedVendors: [
-          {
-            category: 'permits',
-            title: 'Municipal Ward Administration',
-            requirements: 'Public gathering permit, waste management clearance',
-            estimatedCostPaise: Math.round(budget * 0.15),
-          },
-          {
-            category: 'entertainment',
-            title: 'Acoustic Sound & Stage Hire',
-            requirements: 'Wireless mics, 1000W PA speakers, technician on site',
-            estimatedCostPaise: Math.round(budget * 0.18),
-          },
-        ],
-      };
+      data = generateCommunityPlan(params);
     }
 
     const latencyMs = Math.round(performance.now() - start);
