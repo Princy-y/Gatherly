@@ -214,9 +214,10 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
 
       onSavePlan(newPlan);
       onClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
       console.error('Plan generation failed:', err);
-      setErrorMsg(`Generation failed: ${err.message || 'Unknown error'}. Please try again.`);
+      setErrorMsg(`Generation failed: ${message}. Please try again.`);
     } finally {
       setIsLoadingAi(false);
     }

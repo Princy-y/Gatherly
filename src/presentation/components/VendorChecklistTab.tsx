@@ -121,7 +121,7 @@ export const VendorChecklistTab: React.FC<VendorChecklistTabProps> = ({
           {(['all', 'venue', 'catering', 'photography', 'decoration', 'entertainment', 'permits'] as const).map(cat => (
             <button
               key={cat}
-              onClick={() => setCategoryFilter(cat as any)}
+              onClick={() => setCategoryFilter(cat)}
               className={`px-2.5 py-1 rounded-full border text-xs capitalize font-semibold transition-all ${
                 categoryFilter === cat
                   ? 'bg-plum text-white border-plum shadow-xs'

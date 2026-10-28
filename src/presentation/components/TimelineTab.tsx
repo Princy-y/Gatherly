@@ -68,7 +68,9 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
           origin: { y: 0.7 },
           colors: ['#DCCEFF', '#FFD9E8', '#FFF0B8', '#D5F3DF'],
         });
-      } catch {}
+      } catch {
+        // Ignored if confetti is blocked or not available in environment
+      }
     }
 
     const updated = plan.tasks.map(t =>

@@ -84,4 +84,29 @@ describe('AI Provider Abstraction & Schema Validation', () => {
     const parsed = AIGeneratedPlanOutputSchema.safeParse(invalidPayload);
     expect(parsed.success).toBe(false);
   });
+
+  it('rejects AI payloads containing negative costs or invalid categories', () => {
+    const negativeCostPayload = {
+      themeTitle: 'Negative Budget',
+      conceptDescription: 'A test event',
+      colorPalette: ['#ffffff', '#000000'],
+      recommendedExpenses: [
+        { category: 'venue', name: 'Hall', estimatedCostPaise: -5000, priority: 'essential' },
+        { category: 'catering', name: 'Food', estimatedCostPaise: 1000, priority: 'essential' },
+        { category: 'decoration', name: 'Decor', estimatedCostPaise: 1000, priority: 'preferred' },
+      ],
+      recommendedTasks: [
+        { title: 'T1', daysBeforeEvent: 10, priority: 'high' },
+        { title: 'T2', daysBeforeEvent: 5, priority: 'medium' },
+        { title: 'T3', daysBeforeEvent: 1, priority: 'low' },
+      ],
+      recommendedVendors: [
+        { category: 'venue', title: 'V1', requirements: 'R1' },
+        { category: 'catering', title: 'V2', requirements: 'R2' },
+      ],
+    };
+
+    const parsed = AIGeneratedPlanOutputSchema.safeParse(negativeCostPayload);
+    expect(parsed.success).toBe(false);
+  });
 });

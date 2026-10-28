@@ -5,10 +5,16 @@ import {
 } from './types';
 import { calculateBudgetSummary } from './budget';
 import { calculateDaysBetween, identifyConflictingTasks } from './timeline';
+import { paiseToRupees } from './currency';
 
 /**
  * Deterministically simulates the impact of proposed constraint changes
- * prior to any AI suggestions.
+ * prior to any AI suggestions. Computes budget overruns, guest scaling effects,
+ * date compression warnings, and task conflicts — all without calling the AI layer.
+ *
+ * @param currentPlan - The current event plan state.
+ * @param changes - The user's proposed constraint modifications.
+ * @returns A complete {@link DeterministicSimulationResult} with warnings and affected IDs.
  */
 export function simulateConstraintImpact(
   currentPlan: EventPlan,
@@ -31,7 +37,7 @@ export function simulateConstraintImpact(
 
   const budgetSummary = calculateBudgetSummary(newBudgetLimitPaise, simulatedExpenses);
   if (budgetSummary.isOverrun) {
-    const overrunINR = budgetSummary.overrunPaise / 100;
+    const overrunINR = paiseToRupees(budgetSummary.overrunPaise);
     warnings.push(
       `Budget Overrun: Proposed budget limit leaves an overrun of ₹${overrunINR.toLocaleString('en-IN')}.`
     );

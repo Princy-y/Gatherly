@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { EventPlan } from '../../domain/types';
 import { getAIProvider } from '../../infrastructure/ai/aiFactory';
 import { InspirationStudioOutput } from '../../infrastructure/ai/aiInterface';
@@ -28,7 +28,7 @@ export const InspirationStudioTab: React.FC<InspirationStudioTabProps> = ({ plan
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
 
-  const fetchInspiration = async () => {
+  const fetchInspiration = useCallback(async () => {
     setIsLoading(true);
     setErrorMsg(null);
     try {
@@ -41,17 +41,17 @@ export const InspirationStudioTab: React.FC<InspirationStudioTabProps> = ({ plan
         budgetLimitPaise: plan.budgetLimitPaise,
       });
       setInspiration(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to generate inspiration:', err);
-      setErrorMsg(err.message || 'Could not fetch creative inspiration.');
+      setErrorMsg(err instanceof Error ? err.message : 'Could not fetch creative inspiration.');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [plan.eventType, plan.title, plan.preferences, plan.guestCount, plan.budgetLimitPaise]);
 
   useEffect(() => {
-    fetchInspiration();
-  }, [plan.id]);
+    void fetchInspiration();
+  }, [fetchInspiration]);
 
   const copyToClipboard = (hex: string) => {
     navigator.clipboard?.writeText(hex);

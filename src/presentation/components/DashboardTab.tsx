@@ -241,7 +241,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ plan, onNavigateTab 
                 <span>{completedTasks} of {totalTasks} Tasks Completed</span>
                 <span>{taskPercent}%</span>
               </div>
-              <div className="w-full h-3.5 bg-cream-200 border-2 border-plum rounded-full overflow-hidden">
+              <div
+                role="progressbar"
+                aria-label="Task completion progress"
+                aria-valuenow={taskPercent}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                className="w-full h-3.5 bg-cream-200 border-2 border-plum rounded-full overflow-hidden"
+              >
                 <div
                   className="h-full bg-mint-300 transition-all duration-500 rounded-full"
                   style={{ width: `${taskPercent}%` }}
@@ -311,7 +318,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ plan, onNavigateTab 
                 <span>{bookedVendors} of {totalVendors} Vendors Booked</span>
                 <span>{totalVendors > 0 ? Math.round((bookedVendors / totalVendors) * 100) : 0}%</span>
               </div>
-              <div className="w-full h-3.5 bg-cream-200 border-2 border-plum rounded-full overflow-hidden">
+              <div
+                role="progressbar"
+                aria-label="Vendor booking progress"
+                aria-valuenow={totalVendors > 0 ? Math.round((bookedVendors / totalVendors) * 100) : 0}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                className="w-full h-3.5 bg-cream-200 border-2 border-plum rounded-full overflow-hidden"
+              >
                 <div
                   className="h-full bg-lavender-300 transition-all duration-500 rounded-full"
                   style={{ width: `${totalVendors > 0 ? (bookedVendors / totalVendors) * 100 : 0}%` }}

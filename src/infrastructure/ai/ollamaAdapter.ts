@@ -63,7 +63,7 @@ export class OllamaAdapter implements IAIProvider {
           ? `Model ${this.modelName} loaded and ready.`
           : `Ollama active, but ${this.modelName} was not found in model tags.`,
       };
-    } catch (err: any) {
+    } catch {
       return {
         name: 'Local Ollama',
         type: 'local',
@@ -256,9 +256,9 @@ Respond ONLY with a JSON object matching:
       const body = await response.json();
       const latencyMs = Math.round(performance.now() - start);
       return { rawResponse: body.response || '', latencyMs };
-    } catch (err: any) {
+    } catch (err: unknown) {
       clearTimeout(timeoutId);
-      if (err.name === 'AbortError') {
+      if (err instanceof Error && err.name === 'AbortError') {
         throw new Error(`Ollama inference timed out after ${this.timeoutMs}ms or was cancelled.`);
       }
       throw err;

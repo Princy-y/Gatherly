@@ -92,7 +92,7 @@ npm install
 # Typecheck
 npm run typecheck
 
-# Automated Test Suite (36 unit, domain, storage, and component tests)
+# Automated Test Suite (43 tests across 10 suites covering domain, storage, AI schemas, and UI)
 npm run test
 
 # Repository Size Audit
@@ -119,7 +119,124 @@ Gatherly AI provides seamless runtime switching between AI engines:
 
 ---
 
-## 📁 Repository Documentation Index
+## 💻 Tech Stack
+
+- **Frontend**: React 18, TypeScript (Strict Mode), Vite 5.4, Tailwind CSS 3.4
+- **Runtime Validation**: Zod 3.23 (AI outputs, domain entities, storage migrations)
+- **Icons & Visuals**: Lucide React, Canvas Confetti, Custom SVG Kawaii components
+- **Testing**: Vitest 2.1, React Testing Library 16, JSDOM, Playwright (E2E)
+- **Quality Tooling**: ESLint 9 (Flat Config), Prettier, TypeScript `tsc --noEmit`
+- **Optional Backend**: FastAPI, Pydantic v2, Uvicorn (Rate-limited, CORS-hardened AI proxy)
+- **Local AI Inference**: Ollama (`qwen2.5:3b`) with fallback deterministic `DemoAdapter`
+
+---
+
+## 📂 Project Structure
+
+```
+Gatherly/
+├── .github/workflows/ci.yml       # GitHub Actions CI (lint, typecheck, test, audit, build)
+├── backend/                       # Optional FastAPI proxy service
+│   ├── main.py                    # Rate-limited proxy with bounded Pydantic schemas
+│   └── requirements.txt
+├── docs/                          # In-depth architectural & testing documentation
+│   ├── architecture.md            # Hexagonal domain layers, topological scheduling
+│   ├── security.md                # Threat model, input sanitation, CSP headers
+│   ├── testing.md                 # Test matrix, unit/component coverage report
+│   ├── ai-benchmark.md            # Measured latency & JSON accuracy benchmarks
+│   └── deployment.md              # Vercel / Netlify / Docker deployment guide
+├── public/                        # Static assets, favicon, screenshots
+│   └── screenshots/
+├── scripts/                       # Engineering audit & benchmark utilities
+│   ├── audit-repo-size.cjs        # Git-tracked repo size auditor (< 10 MB limit)
+│   └── benchmark-ollama.mjs       # Real Ollama inference test runner
+├── src/
+│   ├── domain/                    # Pure Domain Layer (zero framework dependencies)
+│   │   ├── budget.ts              # Integer-paise financial engine & savings recommender
+│   │   ├── constraints.ts         # Deterministic replanning & delta simulation
+│   │   ├── currency.ts            # Rupee/paise conversion & Indian number formatting
+│   │   ├── timeline.ts            # DAG task ordering, cycle detection (DFS/Kahn's)
+│   │   ├── types.ts               # Zod domain schemas & TypeScript types
+│   │   └── __tests__/             # Unit tests for pure domain logic
+│   ├── infrastructure/            # Adapter & Storage Layer
+│   │   ├── ai/                    # Replaceable AI interface (Demo, Ollama, Factory)
+│   │   │   ├── aiFactory.ts       # Runtime provider switcher
+│   │   │   ├── aiInterface.ts     # Zod output schemas & provider interfaces
+│   │   │   ├── demoAdapter.ts     # Deterministic offline mock provider
+│   │   │   ├── ollamaAdapter.ts   # Local Ollama HTTP client with timeout/abort
+│   │   │   └── __tests__/         # AI response schema validation tests
+│   │   └── storage/               # Browser Persistence
+│   │       ├── localStorageAdapter.ts # Versioned schema, v0->v1 migrations, recovery
+│   │       ├── storageInterface.ts
+│   │       └── __tests__/         # Storage corruption & migration tests
+│   ├── presentation/              # Presentation & UI Layer
+│   │   ├── components/            # Kawaii scrapbook neo-brutalist tabs & modals
+│   │   │   ├── BudgetStudioTab.tsx
+│   │   │   ├── DashboardTab.tsx
+│   │   │   ├── ErrorBoundary.tsx  # React error boundary with friendly recovery
+│   │   │   ├── EventSwitchModal.tsx
+│   │   │   ├── EventWizardModal.tsx
+│   │   │   ├── InspirationStudioTab.tsx
+│   │   │   ├── KawaiiDecorations.tsx # Inline SVG bows, sparkles, flowers, bunny
+│   │   │   ├── Navbar.tsx
+│   │   │   ├── TimelineTab.tsx
+│   │   │   ├── VendorChecklistTab.tsx
+│   │   │   └── WhatIfSimulatorTab.tsx
+│   │   └── __tests__/             # Component & user flow test suites
+│   ├── App.tsx                    # Root component with toast notifications
+│   ├── index.css                  # Tailwind styles, washi tape, focus-visible
+│   └── main.tsx                   # React strict mode entrypoint
+├── vercel.json                    # Security headers (CSP, HSTS, X-Frame-Options)
+├── vite.config.ts                 # Vite & Vitest configuration
+└── tsconfig.json                  # Strict TypeScript configuration
+```
+
+---
+
+## 🛠️ Environment Variables & Configuration
+
+A template configuration is provided in [`.env.example`](file:///d:/Gatherly/.env.example):
+
+| Variable | Default Value | Description |
+|---|---|---|
+| `VITE_AI_PROVIDER` | `demo` | AI mode: `demo` (offline deterministic), `local` (Ollama), or `remote` |
+| `VITE_OLLAMA_BASE_URL` | `http://localhost:11434` | Endpoint for local Ollama daemon |
+| `VITE_OLLAMA_MODEL` | `qwen2.5:3b` | Target LLM model for local inference |
+| `VITE_REMOTE_API_BASE_URL` | `http://localhost:8000` | Optional FastAPI proxy backend URL |
+
+---
+
+## 📜 Available NPM Scripts
+
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Starts Vite local development server on `http://localhost:5173` |
+| `npm run build` | Runs TypeScript compilation (`tsc -b`) and bundles for production with Vite |
+| `npm run preview` | Previews the production build locally |
+| `npm run lint` | Runs ESLint 9 Flat Config with `--max-warnings 0` |
+| `npm run typecheck` | Validates strict TypeScript types across the entire project (`tsc --noEmit`) |
+| `npm run test` | Runs the 43 automated tests using Vitest (JSDOM environment) |
+| `npm run test:e2e` | Executes Playwright end-to-end tests in headless Chromium |
+| `npm run audit:size` | Audits git-tracked repository size against the strict 10 MB competition limit |
+
+---
+
+## 💡 Code Quality & Engineering Decisions
+
+1. **Integer Minor Currency Units**:
+   - Money is never stored as floating-point numbers. Stored as integer **paise** (`1 INR = 100 paise`), eliminating rounding artifacts (`0.1 + 0.2 !== 0.3`).
+2. **Zero-Hallucination Deterministic Guardrails**:
+   - Math is never delegated to the language model. Budget overrun calculations, guest-to-catering scaling, and date compression deltas run entirely in pure TypeScript domain logic before the AI is consulted.
+3. **Explicit Human-in-the-Loop Approval**:
+   - AI recommendations never mutate state directly. The What-If Replanner displays a transparent Before-and-After diff and requires an explicit click on "Apply Approved Changes".
+4. **Resilient Offline Architecture**:
+   - Evaluators don't need local Ollama or a high-end GPU to test Gatherly AI. The production-ready `DemoAdapter` provides instant, deterministic responses matching Zod schemas.
+5. **Robust Error Handling**:
+   - All AI calls and storage operations use typed `unknown` error narrowing with `instanceof Error`. A dedicated `<ErrorBoundary>` catches uncaught render exceptions, offering graceful in-place recovery.
+6. **Defensive Web Security**:
+   - Strict Content Security Policy (CSP), `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, bounded input lengths on all text fields, and zero usage of `dangerouslySetInnerHTML`.
+
+---
 
 - [Architecture & Domain Model](docs/architecture.md)
 - [Security Specification](docs/security.md)

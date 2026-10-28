@@ -27,9 +27,10 @@ graph TD
 
 | Suite | Command | Environment | Scope |
 |---|---|---|---|
-| **Unit & Component Tests** | `npm run test` | Node.js (Vitest + JSDOM) | 36 Automated Tests across 9 Suites |
+| **Unit & Component Tests** | `npm run test` | Node.js (Vitest + JSDOM) | 43 Automated Tests across 10 Suites |
+| **Lint Check** | `npm run lint` | ESLint 9 Flat Config | Zero errors, zero warnings |
 | **Typecheck** | `npm run typecheck` | TypeScript 5.6+ (Strict Mode) | Zero compiler errors |
-| **Production Build** | `npm run build` | Vite Bundler | Bundles into ~350KB JS, ~26KB CSS |
+| **Production Build** | `npm run build` | Vite Bundler | Bundles into ~353KB JS, ~26KB CSS |
 | **Repository Size Audit** | `npm run audit:size` | Node.js | Strict verification against < 10 MB limit |
 | **End-to-End Testing** | `npm run test:e2e` | Playwright Chromium | Critical multi-tab user journey |
 | **Live AI Benchmark** | `node scripts/benchmark-ollama.mjs` | Node.js + Ollama | Real inference evaluation on `qwen2.5:3b` |
@@ -42,17 +43,18 @@ graph TD
  RUN  v2.1.9 D:/Gatherly
 
  ✓ src/domain/__tests__/timeline.test.ts (6 tests)
- ✓ src/domain/__tests__/currency.test.ts (4 tests)
- ✓ src/domain/__tests__/budget.test.ts (5 tests)
+ ✓ src/domain/__tests__/budget.test.ts (6 tests)
  ✓ src/infrastructure/storage/__tests__/localStorageAdapter.test.ts (5 tests)
  ✓ src/domain/__tests__/constraints.test.ts (3 tests)
- ✓ src/infrastructure/ai/__tests__/aiAdapters.test.ts (4 tests)
+ ✓ src/domain/__tests__/currency.test.ts (5 tests)
+ ✓ src/presentation/__tests__/ErrorBoundary.test.tsx (4 tests)
  ✓ src/presentation/__tests__/BudgetStudioTab.test.tsx (3 tests)
+ ✓ src/infrastructure/ai/__tests__/aiAdapters.test.ts (5 tests)
  ✓ src/presentation/__tests__/WhatIfSimulatorTab.test.tsx (3 tests)
  ✓ src/presentation/__tests__/App.test.tsx (3 tests)
 
- Test Files  9 passed (9)
-      Tests  36 passed (36)
+ Test Files  10 passed (10)
+      Tests  43 passed (43)
 ```
 
 ---

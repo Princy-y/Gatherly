@@ -102,9 +102,9 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
       });
 
       setAiProposal(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to get AI replanning proposal:', err);
-      setAiError(err.message || 'Could not consult replanning engine.');
+      setAiError(err instanceof Error ? err.message : 'Could not consult replanning engine.');
     } finally {
       setIsConsultingAi(false);
     }
@@ -179,7 +179,9 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
         origin: { y: 0.6 },
         colors: ['#DCCEFF', '#FFD9E8', '#FFF0B8', '#D5F3DF'],
       });
-    } catch {}
+    } catch {
+      // Ignored if confetti is blocked or not available in environment
+    }
   };
 
   return (

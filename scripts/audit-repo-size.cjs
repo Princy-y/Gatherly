@@ -1,24 +1,5 @@
 const fs = require('fs');
-const path = require('path');
 const { execSync } = require('child_process');
-
-function getDirectorySize(dirPath) {
-  let totalSize = 0;
-  if (!fs.existsSync(dirPath)) return 0;
-  const entries = fs.readdirSync(dirPath, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = path.join(dirPath, entry.name);
-    if (entry.isDirectory()) {
-      if (entry.name === 'node_modules' || entry.name === '.git' || entry.name === 'dist') {
-        continue; // Exclude non-committed / generated dirs
-      }
-      totalSize += getDirectorySize(fullPath);
-    } else {
-      totalSize += fs.statSync(fullPath).size;
-    }
-  }
-  return totalSize;
-}
 
 function getGitTrackedSize() {
   try {
@@ -31,7 +12,7 @@ function getGitTrackedSize() {
       }
     }
     return { count: files.length, total };
-  } catch (err) {
+  } catch (_err) {
     return { count: 0, total: 0 };
   }
 }

@@ -59,7 +59,7 @@ export class LocalStorageAdapter implements IEventStorage {
         return null;
       }
       return validation.data;
-    } catch (err) {
+    } catch (err: unknown) {
       console.error(`Failed to parse stored event for ID ${id}:`, err);
       return null;
     }
@@ -102,7 +102,7 @@ export class LocalStorageAdapter implements IEventStorage {
     let raw: unknown;
     try {
       raw = JSON.parse(jsonString);
-    } catch (err) {
+    } catch {
       throw new Error('Invalid JSON format for event import.');
     }
 
@@ -116,34 +116,43 @@ export class LocalStorageAdapter implements IEventStorage {
     return result.data;
   }
 
-  private migrateRecord(data: any): any {
+  /**
+   * Migrates a raw (potentially legacy) persisted record to the current schema version.
+   * Converts v0 records (rupees-based fields) to v1 (paise-based fields).
+   *
+   * @param data - The raw parsed JSON value from storage.
+   * @returns A record upgraded to the current schema (or the original value unchanged).
+   */
+  private migrateRecord(data: unknown): unknown {
     if (!data || typeof data !== 'object') return data;
-    const version = data.schemaVersion || 0;
+    const record = data as Record<string, unknown>;
+    const version = typeof record.schemaVersion === 'number' ? record.schemaVersion : 0;
 
-    // Migration from v0 -> v1
+    // Migration from v0 → v1: convert rupee-based fields to paise
     if (version < 1) {
-      data.schemaVersion = 1;
-      data.currency = data.currency || 'INR';
-      // If legacy budget in major rupees was stored, convert
-      if (data.budgetLimit && !data.budgetLimitPaise) {
-        data.budgetLimitPaise = Math.round(data.budgetLimit * 100);
+      record.schemaVersion = 1;
+      if (!record.currency) record.currency = 'INR';
+
+      if (typeof record.budgetLimit === 'number' && !record.budgetLimitPaise) {
+        record.budgetLimitPaise = Math.round(record.budgetLimit as number * 100);
       }
-      if (Array.isArray(data.expenses)) {
-        data.expenses = data.expenses.map((e: any) => ({
+
+      if (Array.isArray(record.expenses)) {
+        record.expenses = (record.expenses as Record<string, unknown>[]).map(e => ({
           ...e,
-          estimatedCostPaise: e.estimatedCostPaise ?? (e.estimatedCost ? Math.round(e.estimatedCost * 100) : 0),
-          actualCostPaise: e.actualCostPaise ?? (e.actualCost ? Math.round(e.actualCost * 100) : null),
+          estimatedCostPaise: e.estimatedCostPaise != null
+            ? e.estimatedCostPaise
+            : typeof e.estimatedCost === 'number' ? Math.round(e.estimatedCost * 100) : 0,
+          actualCostPaise: e.actualCostPaise != null
+            ? e.actualCostPaise
+            : typeof e.actualCost === 'number' ? Math.round(e.actualCost * 100) : null,
         }));
       }
-      if (!Array.isArray(data.vendors)) {
-        data.vendors = [];
-      }
-      if (!Array.isArray(data.tasks)) {
-        data.tasks = [];
-      }
+      if (!Array.isArray(record.vendors)) record.vendors = [];
+      if (!Array.isArray(record.tasks)) record.tasks = [];
     }
 
-    return data;
+    return record;
   }
 
   private updateIndex(event: EventPlan): void {

@@ -77,7 +77,7 @@ async function runBenchmark() {
       try {
         parsed = JSON.parse(data.response);
         jsonValid = typeof parsed === 'object' && parsed !== null;
-      } catch (err) {
+      } catch (_err) {
         jsonValid = false;
       }
 

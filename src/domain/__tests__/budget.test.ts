@@ -108,4 +108,24 @@ describe('Deterministic Budget Engine', () => {
     expect(preferredTrim?.name).toBe('Drone & Candid Photo');
     expect(preferredTrim?.potentialSavingPaise).toBe(500000); // 25% of 20,000 = 5,000
   });
+
+  it('handles empty expenses and zero budget edge cases gracefully', () => {
+    const emptySummary = calculateBudgetSummary(0, []);
+    expect(emptySummary.totalEstimatedPaise).toBe(0);
+    expect(emptySummary.totalActualPaise).toBe(0);
+    expect(emptySummary.effectiveCommittedPaise).toBe(0);
+    expect(emptySummary.remainingBudgetPaise).toBe(0);
+    expect(emptySummary.isOverrun).toBe(false);
+    expect(emptySummary.variancePercentage).toBe(0);
+
+    const emptyCategories = calculateCategoryBreakdown(0, []);
+    expect(emptyCategories).toEqual([]);
+
+    const emptyPriorities = calculatePriorityBreakdown(0, []);
+    expect(emptyPriorities).toHaveLength(3);
+    expect(emptyPriorities.every(p => p.totalPaise === 0 && p.itemCount === 0)).toBe(true);
+
+    const emptySavings = generateDeterministicSavings(0, []);
+    expect(emptySavings).toEqual([]);
+  });
 });

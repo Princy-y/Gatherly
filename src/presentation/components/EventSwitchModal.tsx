@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { LocalStorageAdapter } from '../../infrastructure/storage/localStorageAdapter';
 import { EventSummaryRecord } from '../../infrastructure/storage/storageInterface';
 import {
   KawaiiBunnyMascot,
 } from './KawaiiDecorations';
 import { Plus, Trash2, X, Upload } from 'lucide-react';
+
+const storage = new LocalStorageAdapter();
 
 interface EventSwitchModalProps {
   isOpen: boolean;
@@ -24,18 +26,17 @@ export const EventSwitchModal: React.FC<EventSwitchModalProps> = ({
   onImportJson,
 }) => {
   const [events, setEvents] = useState<EventSummaryRecord[]>([]);
-  const storage = new LocalStorageAdapter();
 
-  const loadList = async () => {
+  const loadList = useCallback(async () => {
     const list = await storage.listEvents();
     setEvents(list);
-  };
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
-      loadList();
+      void loadList();
     }
-  }, [isOpen]);
+  }, [isOpen, loadList]);
 
   if (!isOpen) return null;
 

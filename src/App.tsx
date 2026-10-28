@@ -13,6 +13,7 @@ import { EventSwitchModal } from './presentation/components/EventSwitchModal';
 import {
   KawaiiBunnyMascot,
 } from './presentation/components/KawaiiDecorations';
+import { ErrorBoundary } from './presentation/components/ErrorBoundary';
 
 const storage = new LocalStorageAdapter();
 
@@ -189,6 +190,13 @@ export const App: React.FC = () => {
   const [currentPlan, setCurrentPlan] = useState<EventPlan>(DEFAULT_INITIAL_PLAN);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isSwitchModalOpen, setIsSwitchModalOpen] = useState(false);
+  /** Transient toast notification: null when hidden, string message when visible. */
+  const [notification, setNotification] = useState<{ message: string; isError: boolean } | null>(null);
+
+  const showNotification = (message: string, isError = false) => {
+    setNotification({ message, isError });
+    setTimeout(() => setNotification(null), 4000);
+  };
 
   // Initialize and load saved plans
   useEffect(() => {
@@ -238,8 +246,9 @@ export const App: React.FC = () => {
       a.download = `gatherly-event-${currentPlan.id}.json`;
       a.click();
       URL.revokeObjectURL(url);
-    } catch (err: any) {
-      alert(`Export error: ${err.message}`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Export failed.';
+      showNotification(message, true);
     }
   };
 
@@ -257,9 +266,10 @@ export const App: React.FC = () => {
           const imported = await storage.importEventJson(content);
           setCurrentPlan(imported);
           setActiveTab('dashboard');
-          alert(`Successfully imported: "${imported.title}"!`);
-        } catch (err: any) {
-          alert(`Import failed: ${err.message}`);
+          showNotification(`Successfully imported: "${imported.title}"! ✅`);
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : 'Import failed.';
+          showNotification(message, true);
         }
       };
       reader.readAsText(file);
@@ -280,8 +290,22 @@ export const App: React.FC = () => {
         onImport={handleImportJson}
       />
 
+      {/* Inline toast notification (replaces browser alert) */}
+      {notification && (
+        <div
+          role="alert"
+          aria-live="polite"
+          className={`fixed top-20 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl border-2 border-plum shadow-kawaii-lg text-sm font-bold text-plum transition-all ${
+            notification.isError ? 'bg-blush-200' : 'bg-mint-200'
+          }`}
+        >
+          {notification.message}
+        </div>
+      )}
+
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <ErrorBoundary>
         {activeTab === 'dashboard' && (
           <DashboardTab plan={currentPlan} onNavigateTab={setActiveTab} />
         )}
@@ -308,6 +332,7 @@ export const App: React.FC = () => {
         {activeTab === 'whatif' && (
           <WhatIfSimulatorTab plan={currentPlan} onApplyPlanRevision={handleSavePlan} />
         )}
+        </ErrorBoundary>
       </main>
 
       {/* Modals */}

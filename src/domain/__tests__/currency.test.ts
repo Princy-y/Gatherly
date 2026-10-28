@@ -33,6 +33,16 @@ describe('Currency & Minor Units Handling (INR)', () => {
     expect(parseRupeesInput('₹50,000')).toBe(5000000);
     expect(parseRupeesInput(' 1,200.50 ')).toBe(120050);
     expect(parseRupeesInput('invalid')).toBe(0);
+    expect(parseRupeesInput('')).toBe(0);
     expect(parseRupeesInput(-100)).toBe(0);
+  });
+
+  it('handles edge case numbers and invalid values safely', () => {
+    expect(() => rupeesToPaise(NaN)).toThrow('Invalid rupee amount');
+    expect(() => rupeesToPaise(Infinity)).toThrow('Invalid rupee amount');
+    expect(() => paiseToRupees(NaN)).toThrow('Invalid paise amount');
+    expect(() => paiseToRupees(Infinity)).toThrow('Invalid paise amount');
+    expect(formatINR(NaN)).toBe('₹0');
+    expect(formatINR(Infinity)).toBe('₹0');
   });
 });
