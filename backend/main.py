@@ -3,19 +3,25 @@ Gatherly AI — Minimal Secure FastAPI AI Proxy Service
 Provides bounded payload limits, restricted CORS, Pydantic validation, and rate limiting.
 """
 
-import time
+import json
+import logging
 import os
+import time
+import urllib.error
+import urllib.request
 from typing import Any, Dict, List, Optional
-from fastapi import FastAPI, HTTPException, Request, Depends, status
+from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-import urllib.request
-import json
+
+# Configure server-side logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("gatherly.proxy")
 
 app = FastAPI(
     title="Gatherly AI Secure Proxy",
     description="Minimal, hardened proxy interface for Gatherly AI planning endpoints.",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 # CORS Configuration
@@ -27,7 +33,7 @@ app.add_middleware(
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["*"],
+    allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
 )
 
 # In-memory sliding window rate limiter (max 30 requests/minute per client IP)
@@ -64,6 +70,7 @@ def rate_limiter(request: Request) -> None:
 # Request models — all fields have bounded lengths to prevent memory exhaustion
 # ---------------------------------------------------------------------------
 
+
 class PlanGenerationRequest(BaseModel):
     """Payload schema for the /api/generate-plan endpoint."""
 
@@ -89,6 +96,7 @@ class PlanRevisionRequest(BaseModel):
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
+
 
 @app.get("/health")
 def healthcheck() -> Dict[str, Any]:
@@ -142,8 +150,57 @@ def generate_plan(payload: PlanGenerationRequest) -> Dict[str, Any]:
         with urllib.request.urlopen(req, timeout=45) as response:
             res_body: Dict[str, Any] = json.loads(response.read().decode("utf-8"))
             return {"data": json.loads(res_body.get("response", "{}")), "model": model}
-    except Exception as exc:
+    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, json.JSONDecodeError) as exc:
+        logger.error("Inference provider error during plan generation: %s", exc, exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail=f"Inference provider temporarily unavailable: {exc}",
+            detail="Inference provider temporarily unavailable. Please try again later.",
+        ) from exc
+
+
+@app.post("/api/revise-plan", dependencies=[Depends(rate_limiter)])
+def revise_plan(payload: PlanRevisionRequest) -> Dict[str, Any]:
+    """
+    Forwards a validated plan-revision request to the local Ollama inference service.
+
+    Args:
+        payload: Validated plan revision parameters and deterministic warnings.
+
+    Returns:
+        A dict containing the AI-generated revision proposal and trade-offs.
+
+    Raises:
+        HTTPException 503: When the Ollama service is unavailable or returns an error.
+    """
+    ollama_url: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+    model: str = os.getenv("OLLAMA_MODEL", "qwen2.5:3b")
+
+    prompt = (
+        f"You are Gatherly AI. Revise plan in JSON:\n"
+        f"Current Plan: {json.dumps(payload.currentPlanSummary)}\n"
+        f"Changes: {json.dumps(payload.changes)}\n"
+        f"Deterministic Warnings: {'; '.join(payload.deterministicWarnings)}\n"
+        "Output valid JSON with fields: rationale, tradeOffs, proposedExpenseAdjustments, proposedTimelineAdjustments."
+    )
+
+    try:
+        req = urllib.request.Request(
+            f"{ollama_url}/api/generate",
+            data=json.dumps({
+                "model": model,
+                "prompt": prompt,
+                "format": "json",
+                "stream": False,
+                "options": {"temperature": 0.3},
+            }).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=45) as response:
+            res_body: Dict[str, Any] = json.loads(response.read().decode("utf-8"))
+            return {"data": json.loads(res_body.get("response", "{}")), "model": model}
+    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, json.JSONDecodeError) as exc:
+        logger.error("Inference provider error during plan revision: %s", exc, exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Inference provider temporarily unavailable. Please try again later.",
         ) from exc
