@@ -10,9 +10,7 @@ import { InspirationStudioTab } from './presentation/components/InspirationStudi
 import { WhatIfSimulatorTab } from './presentation/components/WhatIfSimulatorTab';
 import { EventWizardModal } from './presentation/components/EventWizardModal';
 import { EventSwitchModal } from './presentation/components/EventSwitchModal';
-import {
-  KawaiiBunnyMascot,
-} from './presentation/components/KawaiiDecorations';
+import { KawaiiBunnyMascot } from './presentation/components/KawaiiDecorations';
 import { ErrorBoundary } from './presentation/components/ErrorBoundary';
 
 const storage = new LocalStorageAdapter();
@@ -29,8 +27,10 @@ const DEFAULT_INITIAL_PLAN: EventPlan = {
   budgetLimitPaise: 150000000, // ₹15,00,000
   guestCount: 150,
   priorities: ['Catering Quality', 'Photography & Film', 'Floral Decor', 'Guest Comfort'],
-  preferences: 'Soft lavender and blush palette, fairy-light canopies, fusion live counters, candid moments.',
-  accessibilityRequirements: 'Wheelchair ramps for lawn reception and priority seating for seniors.',
+  preferences:
+    'Soft lavender and blush palette, fairy-light canopies, fusion live counters, candid moments.',
+  accessibilityRequirements:
+    'Wheelchair ramps for lawn reception and priority seating for seniors.',
   expenses: [
     {
       id: 'e1',
@@ -191,7 +191,9 @@ export const App: React.FC = () => {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [isSwitchModalOpen, setIsSwitchModalOpen] = useState(false);
   /** Transient toast notification: null when hidden, string message when visible. */
-  const [notification, setNotification] = useState<{ message: string; isError: boolean } | null>(null);
+  const [notification, setNotification] = useState<{ message: string; isError: boolean } | null>(
+    null
+  );
 
   const showNotification = (message: string, isError = false) => {
     setNotification({ message, isError });
@@ -256,11 +258,11 @@ export const App: React.FC = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.json,application/json';
-    input.onchange = async e => {
+    input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = async ev => {
+      reader.onload = async (ev) => {
         try {
           const content = ev.target?.result as string;
           const imported = await storage.importEventJson(content);
@@ -306,32 +308,34 @@ export const App: React.FC = () => {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <ErrorBoundary>
-        {activeTab === 'dashboard' && (
-          <DashboardTab plan={currentPlan} onNavigateTab={setActiveTab} />
-        )}
-        {activeTab === 'budget' && (
-          <BudgetStudioTab
-            plan={currentPlan}
-            onUpdateExpenses={expenses => handleSavePlan({ ...currentPlan, expenses })}
-            onUpdateBudgetLimit={limit => handleSavePlan({ ...currentPlan, budgetLimitPaise: limit })}
-          />
-        )}
-        {activeTab === 'timeline' && (
-          <TimelineTab
-            plan={currentPlan}
-            onUpdateTasks={tasks => handleSavePlan({ ...currentPlan, tasks })}
-          />
-        )}
-        {activeTab === 'vendors' && (
-          <VendorChecklistTab
-            plan={currentPlan}
-            onUpdateVendors={vendors => handleSavePlan({ ...currentPlan, vendors })}
-          />
-        )}
-        {activeTab === 'inspiration' && <InspirationStudioTab plan={currentPlan} />}
-        {activeTab === 'whatif' && (
-          <WhatIfSimulatorTab plan={currentPlan} onApplyPlanRevision={handleSavePlan} />
-        )}
+          {activeTab === 'dashboard' && (
+            <DashboardTab plan={currentPlan} onNavigateTab={setActiveTab} />
+          )}
+          {activeTab === 'budget' && (
+            <BudgetStudioTab
+              plan={currentPlan}
+              onUpdateExpenses={(expenses) => handleSavePlan({ ...currentPlan, expenses })}
+              onUpdateBudgetLimit={(limit) =>
+                handleSavePlan({ ...currentPlan, budgetLimitPaise: limit })
+              }
+            />
+          )}
+          {activeTab === 'timeline' && (
+            <TimelineTab
+              plan={currentPlan}
+              onUpdateTasks={(tasks) => handleSavePlan({ ...currentPlan, tasks })}
+            />
+          )}
+          {activeTab === 'vendors' && (
+            <VendorChecklistTab
+              plan={currentPlan}
+              onUpdateVendors={(vendors) => handleSavePlan({ ...currentPlan, vendors })}
+            />
+          )}
+          {activeTab === 'inspiration' && <InspirationStudioTab plan={currentPlan} />}
+          {activeTab === 'whatif' && (
+            <WhatIfSimulatorTab plan={currentPlan} onApplyPlanRevision={handleSavePlan} />
+          )}
         </ErrorBoundary>
       </main>
 
@@ -339,7 +343,7 @@ export const App: React.FC = () => {
       <EventWizardModal
         isOpen={isWizardOpen}
         onClose={() => setIsWizardOpen(false)}
-        onSavePlan={newPlan => {
+        onSavePlan={(newPlan) => {
           handleSavePlan(newPlan);
           setActiveTab('dashboard');
         }}

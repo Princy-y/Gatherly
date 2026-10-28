@@ -86,7 +86,7 @@ export class LocalStorageAdapter implements IEventStorage {
     storage.removeItem(`${STORAGE_PREFIX}${id}`);
 
     const list = await this.listEvents();
-    const filtered = list.filter(item => item.id !== id);
+    const filtered = list.filter((item) => item.id !== id);
     storage.setItem(INDEX_KEY, JSON.stringify(filtered));
   }
 
@@ -109,7 +109,9 @@ export class LocalStorageAdapter implements IEventStorage {
     const migrated = this.migrateRecord(raw);
     const result = EventPlanSchema.safeParse(migrated);
     if (!result.success) {
-      throw new Error(`Schema validation failed on imported event: ${result.error.errors.map(e => e.message).join(', ')}`);
+      throw new Error(
+        `Schema validation failed on imported event: ${result.error.errors.map((e) => e.message).join(', ')}`
+      );
     }
 
     await this.saveEvent(result.data);
@@ -134,18 +136,24 @@ export class LocalStorageAdapter implements IEventStorage {
       if (!record.currency) record.currency = 'INR';
 
       if (typeof record.budgetLimit === 'number' && !record.budgetLimitPaise) {
-        record.budgetLimitPaise = Math.round(record.budgetLimit as number * 100);
+        record.budgetLimitPaise = Math.round((record.budgetLimit as number) * 100);
       }
 
       if (Array.isArray(record.expenses)) {
-        record.expenses = (record.expenses as Record<string, unknown>[]).map(e => ({
+        record.expenses = (record.expenses as Record<string, unknown>[]).map((e) => ({
           ...e,
-          estimatedCostPaise: e.estimatedCostPaise != null
-            ? e.estimatedCostPaise
-            : typeof e.estimatedCost === 'number' ? Math.round(e.estimatedCost * 100) : 0,
-          actualCostPaise: e.actualCostPaise != null
-            ? e.actualCostPaise
-            : typeof e.actualCost === 'number' ? Math.round(e.actualCost * 100) : null,
+          estimatedCostPaise:
+            e.estimatedCostPaise != null
+              ? e.estimatedCostPaise
+              : typeof e.estimatedCost === 'number'
+                ? Math.round(e.estimatedCost * 100)
+                : 0,
+          actualCostPaise:
+            e.actualCostPaise != null
+              ? e.actualCostPaise
+              : typeof e.actualCost === 'number'
+                ? Math.round(e.actualCost * 100)
+                : null,
         }));
       }
       if (!Array.isArray(record.vendors)) record.vendors = [];
@@ -168,7 +176,7 @@ export class LocalStorageAdapter implements IEventStorage {
       }
     }
 
-    const existingIndex = list.findIndex(item => item.id === event.id);
+    const existingIndex = list.findIndex((item) => item.id === event.id);
     const summary: EventSummaryRecord = {
       id: event.id,
       title: event.title,

@@ -62,12 +62,7 @@ describe('WhatIfSimulatorTab Signature Replanner Component', () => {
   it('renders simulator controls and performs live deterministic consequence math', () => {
     const handleApplyPlanRevision = vi.fn();
 
-    render(
-      <WhatIfSimulatorTab
-        plan={mockPlan}
-        onApplyPlanRevision={handleApplyPlanRevision}
-      />
-    );
+    render(<WhatIfSimulatorTab plan={mockPlan} onApplyPlanRevision={handleApplyPlanRevision} />);
 
     expect(screen.getByText(/Constraint-Aware What-If Replanner/i)).toBeInTheDocument();
     expect(screen.getByText(/Step 1: Deterministic Consequence Analysis/i)).toBeInTheDocument();
@@ -78,12 +73,7 @@ describe('WhatIfSimulatorTab Signature Replanner Component', () => {
   it('calculates deterministic warnings when budget is cut', () => {
     const handleApplyPlanRevision = vi.fn();
 
-    render(
-      <WhatIfSimulatorTab
-        plan={mockPlan}
-        onApplyPlanRevision={handleApplyPlanRevision}
-      />
-    );
+    render(<WhatIfSimulatorTab plan={mockPlan} onApplyPlanRevision={handleApplyPlanRevision} />);
 
     // Click -25% Cut button
     const cutBtn = screen.getByRole('button', { name: /-25% Cut/i });
@@ -97,17 +87,14 @@ describe('WhatIfSimulatorTab Signature Replanner Component', () => {
   it('consults AI replanning engine and displays trade-off review card', async () => {
     const handleApplyPlanRevision = vi.fn();
 
-    render(
-      <WhatIfSimulatorTab
-        plan={mockPlan}
-        onApplyPlanRevision={handleApplyPlanRevision}
-      />
-    );
+    render(<WhatIfSimulatorTab plan={mockPlan} onApplyPlanRevision={handleApplyPlanRevision} />);
 
     // Apply budget cut
     fireEvent.click(screen.getByRole('button', { name: /-10% Cut/i }));
 
-    const consultBtn = screen.getByRole('button', { name: /Step 2: Consult AI for Trade-Off Proposal/i });
+    const consultBtn = screen.getByRole('button', {
+      name: /Step 2: Consult AI for Trade-Off Proposal/i,
+    });
     fireEvent.click(consultBtn);
 
     // Wait for AI proposal card to render

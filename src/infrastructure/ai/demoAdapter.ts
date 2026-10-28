@@ -52,7 +52,7 @@ export class DemoAdapter implements IAIProvider {
           {
             category: 'catering',
             name: 'Live Culinary Stations & Welcome Mocktails',
-            estimatedCostPaise: Math.round(budget * 0.30),
+            estimatedCostPaise: Math.round(budget * 0.3),
             priority: 'essential',
             notes: `Calculated for ~${params.guestCount} guests`,
           },
@@ -101,7 +101,8 @@ export class DemoAdapter implements IAIProvider {
           },
           {
             title: 'Pre-wedding Shoot & Shot List Briefing',
-            description: 'Brief photographer on family portraits and must-capture emotional moments.',
+            description:
+              'Brief photographer on family portraits and must-capture emotional moments.',
             daysBeforeEvent: 20,
             priority: 'medium',
             vendorCategory: 'photography',
@@ -132,7 +133,7 @@ export class DemoAdapter implements IAIProvider {
             category: 'catering',
             title: 'Artisan Gourmet Caterers',
             requirements: 'Vegetarian + Global Live Counters, 2 Welcome Drinks',
-            estimatedCostPaise: Math.round(budget * 0.30),
+            estimatedCostPaise: Math.round(budget * 0.3),
           },
           {
             category: 'photography',
@@ -152,7 +153,7 @@ export class DemoAdapter implements IAIProvider {
           {
             category: 'venue',
             name: 'Boutique Party Cafe or Terrace Garden',
-            estimatedCostPaise: Math.round(budget * 0.30),
+            estimatedCostPaise: Math.round(budget * 0.3),
             priority: 'essential',
           },
           {
@@ -248,7 +249,7 @@ export class DemoAdapter implements IAIProvider {
           {
             category: 'catering',
             name: 'Community Refreshment Kiosk & Chai Counters',
-            estimatedCostPaise: Math.round(budget * 0.30),
+            estimatedCostPaise: Math.round(budget * 0.3),
             priority: 'essential',
           },
           {
@@ -342,7 +343,8 @@ export class DemoAdapter implements IAIProvider {
         name: 'Curated Minimalist Pastel Floral Arrangement',
         newEstimatedCostPaise: Math.round(targetBudget * 0.09),
         priority: 'preferred',
-        reason: 'Swapped fresh exotic blooms for seasonal sustainable flora to meet budget reduction.',
+        reason:
+          'Swapped fresh exotic blooms for seasonal sustainable flora to meet budget reduction.',
       });
       proposedExpenseAdjustments.push({
         category: 'entertainment',
@@ -361,7 +363,8 @@ export class DemoAdapter implements IAIProvider {
         'Adjusted venue seating layout from banquet roundtables to cocktail lounge style to maximize room capacity.'
       );
 
-      const newGuestBudget = params.changes.newBudgetLimitPaise || params.currentPlanSummary.budgetLimitPaise;
+      const newGuestBudget =
+        params.changes.newBudgetLimitPaise || params.currentPlanSummary.budgetLimitPaise;
       proposedExpenseAdjustments.push({
         category: 'catering',
         name: 'Buffet Stations & Finger Food Scaled for Guest Count',
@@ -383,7 +386,9 @@ export class DemoAdapter implements IAIProvider {
     }
 
     if (tradeOffs.length === 0) {
-      tradeOffs.push('Optimized task pacing and clarified expense allocations for balanced cash flow.');
+      tradeOffs.push(
+        'Optimized task pacing and clarified expense allocations for balanced cash flow.'
+      );
     }
 
     const data: AIPlanRevisionProposal = {

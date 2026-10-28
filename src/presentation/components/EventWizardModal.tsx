@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
-import {
-  EventType,
-  EventPlan,
-} from '../../domain/types';
+import { EventType, EventPlan } from '../../domain/types';
 import { rupeesToPaise } from '../../domain/currency';
 import { getAIProvider } from '../../infrastructure/ai/aiFactory';
-import {
-  KawaiiBow,
-  KawaiiSparkle,
-  KawaiiBunnyMascot,
-} from './KawaiiDecorations';
+import { KawaiiBow, KawaiiSparkle, KawaiiBunnyMascot } from './KawaiiDecorations';
 import { Sparkles, Calendar, MapPin, Users, AlertCircle, X, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -59,7 +52,7 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
 
   const togglePriority = (p: string) => {
     if (selectedPriorities.includes(p)) {
-      setSelectedPriorities(selectedPriorities.filter(item => item !== p));
+      setSelectedPriorities(selectedPriorities.filter((item) => item !== p));
     } else {
       setSelectedPriorities([...selectedPriorities, p]);
     }
@@ -72,8 +65,15 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
       setLocation('Jaipur & Udaipur');
       setGuestCount(150);
       setBudgetRupees('1500000');
-      setSelectedPriorities(['Venue Atmosphere', 'Catering Quality', 'Photography & Film', 'Floral Decor']);
-      setPreferences('Pastel mandap with lavender & blush florals, candid photography, fusion live counters.');
+      setSelectedPriorities([
+        'Venue Atmosphere',
+        'Catering Quality',
+        'Photography & Film',
+        'Floral Decor',
+      ]);
+      setPreferences(
+        'Pastel mandap with lavender & blush florals, candid photography, fusion live counters.'
+      );
       setAccessibilityRequirements('Wheelchair ramp for lawn area and elderly seating.');
     } else if (type === 'birthday') {
       setTitle('Zoya’s Kawaii Sugar Wonderland 7th Birthday');
@@ -89,8 +89,12 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
       setGuestCount(250);
       setBudgetRupees('150000');
       setSelectedPriorities(['Sustainable / Eco-Friendly', 'Live Entertainment', 'Guest Comfort']);
-      setPreferences('Zero single-use plastics, local artisan food kiosks, acoustic neighborhood open-mic.');
-      setAccessibilityRequirements('Signage in English & Kannada, accessible parking near community hall.');
+      setPreferences(
+        'Zero single-use plastics, local artisan food kiosks, acoustic neighborhood open-mic.'
+      );
+      setAccessibilityRequirements(
+        'Signage in English & Kannada, accessible parking near community hall.'
+      );
     }
   };
 
@@ -314,7 +318,7 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
                 { type: 'wedding', label: '💒 Wedding', color: 'bg-blush-100' },
                 { type: 'birthday', label: '🎂 Birthday', color: 'bg-butter-100' },
                 { type: 'community', label: '🎈 Community', color: 'bg-mint-100' },
-              ].map(item => (
+              ].map((item) => (
                 <button
                   type="button"
                   key={item.type}
@@ -334,7 +338,10 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
           {/* Title & Location */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label htmlFor="event-title" className="block text-xs font-bold text-plum uppercase tracking-wider mb-1">
+              <label
+                htmlFor="event-title"
+                className="block text-xs font-bold text-plum uppercase tracking-wider mb-1"
+              >
                 Event Name *
               </label>
               <input
@@ -343,12 +350,15 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
                 required
                 placeholder="e.g. Diya & Kabir's Reception"
                 value={title}
-                onChange={e => setTitle(e.target.value)}
+                onChange={(e) => setTitle(e.target.value)}
                 className="w-full px-3 py-2 bg-white border-2 border-plum rounded-xl text-xs sm:text-sm text-plum focus:ring-0 focus:border-plum"
               />
             </div>
             <div>
-              <label htmlFor="event-location" className="block text-xs font-bold text-plum uppercase tracking-wider mb-1">
+              <label
+                htmlFor="event-location"
+                className="block text-xs font-bold text-plum uppercase tracking-wider mb-1"
+              >
                 Location *
               </label>
               <div className="relative">
@@ -358,7 +368,7 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
                   required
                   placeholder="e.g. Bengaluru, Karnataka"
                   value={location}
-                  onChange={e => setLocation(e.target.value)}
+                  onChange={(e) => setLocation(e.target.value)}
                   className="w-full pl-8 pr-3 py-2 bg-white border-2 border-plum rounded-xl text-xs sm:text-sm text-plum focus:ring-0 focus:border-plum"
                 />
                 <MapPin className="w-4 h-4 text-plum-light absolute left-2.5 top-2.5" />
@@ -369,7 +379,10 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
           {/* Date, Guests, Budget */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label htmlFor="event-date" className="block text-xs font-bold text-plum uppercase tracking-wider mb-1">
+              <label
+                htmlFor="event-date"
+                className="block text-xs font-bold text-plum uppercase tracking-wider mb-1"
+              >
                 Target Date *
               </label>
               <div className="relative">
@@ -378,7 +391,7 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
                   type="date"
                   required
                   value={eventDate}
-                  onChange={e => setEventDate(e.target.value)}
+                  onChange={(e) => setEventDate(e.target.value)}
                   className="w-full pl-8 pr-3 py-2 bg-white border-2 border-plum rounded-xl text-xs sm:text-sm text-plum focus:ring-0 focus:border-plum"
                 />
                 <Calendar className="w-4 h-4 text-plum-light absolute left-2.5 top-2.5" />
@@ -386,7 +399,10 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
             </div>
 
             <div>
-              <label htmlFor="guest-count" className="block text-xs font-bold text-plum uppercase tracking-wider mb-1">
+              <label
+                htmlFor="guest-count"
+                className="block text-xs font-bold text-plum uppercase tracking-wider mb-1"
+              >
                 Guest Count *
               </label>
               <div className="relative">
@@ -396,7 +412,7 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
                   min="1"
                   required
                   value={guestCount}
-                  onChange={e => setGuestCount(Math.max(1, parseInt(e.target.value) || 1))}
+                  onChange={(e) => setGuestCount(Math.max(1, parseInt(e.target.value) || 1))}
                   className="w-full pl-8 pr-3 py-2 bg-white border-2 border-plum rounded-xl text-xs sm:text-sm text-plum focus:ring-0 focus:border-plum"
                 />
                 <Users className="w-4 h-4 text-plum-light absolute left-2.5 top-2.5" />
@@ -404,7 +420,10 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
             </div>
 
             <div>
-              <label htmlFor="budget-rupees" className="block text-xs font-bold text-plum uppercase tracking-wider mb-1">
+              <label
+                htmlFor="budget-rupees"
+                className="block text-xs font-bold text-plum uppercase tracking-wider mb-1"
+              >
                 Total Budget (₹ INR) *
               </label>
               <div className="relative">
@@ -414,7 +433,7 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
                   type="text"
                   required
                   value={budgetRupees}
-                  onChange={e => setBudgetRupees(e.target.value)}
+                  onChange={(e) => setBudgetRupees(e.target.value)}
                   className="w-full pl-7 pr-3 py-2 bg-white border-2 border-plum rounded-xl text-xs sm:text-sm text-plum focus:ring-0 focus:border-plum font-bold"
                 />
               </div>
@@ -427,7 +446,7 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
               Key Priorities (Select all that apply)
             </label>
             <div className="flex flex-wrap gap-1.5">
-              {priorityOptions.map(p => {
+              {priorityOptions.map((p) => {
                 const isSelected = selectedPriorities.includes(p);
                 return (
                   <button
@@ -451,7 +470,10 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
           {/* Preferences & Accessibility */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label htmlFor="event-pref" className="block text-xs font-bold text-plum uppercase tracking-wider mb-1">
+              <label
+                htmlFor="event-pref"
+                className="block text-xs font-bold text-plum uppercase tracking-wider mb-1"
+              >
                 Theme / Personal Preferences
               </label>
               <textarea
@@ -459,12 +481,15 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
                 rows={2}
                 placeholder="e.g. Lavender & blush aesthetic, acoustic music, traditional welcome"
                 value={preferences}
-                onChange={e => setPreferences(e.target.value)}
+                onChange={(e) => setPreferences(e.target.value)}
                 className="w-full px-3 py-1.5 bg-white border-2 border-plum rounded-xl text-xs sm:text-sm text-plum focus:ring-0 focus:border-plum"
               />
             </div>
             <div>
-              <label htmlFor="event-access" className="block text-xs font-bold text-plum uppercase tracking-wider mb-1">
+              <label
+                htmlFor="event-access"
+                className="block text-xs font-bold text-plum uppercase tracking-wider mb-1"
+              >
                 Accessibility Requirements
               </label>
               <textarea
@@ -472,7 +497,7 @@ export const EventWizardModal: React.FC<EventWizardModalProps> = ({
                 rows={2}
                 placeholder="e.g. Wheelchair ramp, elderly seating, dietary allergen signage"
                 value={accessibilityRequirements}
-                onChange={e => setAccessibilityRequirements(e.target.value)}
+                onChange={(e) => setAccessibilityRequirements(e.target.value)}
                 className="w-full px-3 py-1.5 bg-white border-2 border-plum rounded-xl text-xs sm:text-sm text-plum focus:ring-0 focus:border-plum"
               />
             </div>

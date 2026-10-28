@@ -25,7 +25,12 @@ export const ExpenseSchema = z.object({
   category: ExpenseCategorySchema,
   name: z.string().min(1, 'Expense name is required'),
   estimatedCostPaise: z.number().int().nonnegative('Estimated cost cannot be negative'),
-  actualCostPaise: z.number().int().nonnegative('Actual cost cannot be negative').nullable().optional(),
+  actualCostPaise: z
+    .number()
+    .int()
+    .nonnegative('Actual cost cannot be negative')
+    .nullable()
+    .optional(),
   priority: ExpensePrioritySchema,
   notes: z.string().optional(),
 });

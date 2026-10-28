@@ -1,18 +1,11 @@
 import React, { useState } from 'react';
-import {
-  EventPlan,
-  ConstraintChanges,
-  DeterministicSimulationResult,
-} from '../../domain/types';
+import { EventPlan, ConstraintChanges, DeterministicSimulationResult } from '../../domain/types';
 import { simulateConstraintImpact } from '../../domain/constraints';
 import { shiftTaskDates } from '../../domain/timeline';
 import { formatINR, paiseToRupees, parseRupeesInput } from '../../domain/currency';
 import { getAIProvider } from '../../infrastructure/ai/aiFactory';
 import { AIPlanRevisionProposal } from '../../infrastructure/ai/aiInterface';
-import {
-  KawaiiBow,
-  KawaiiSparkle,
-} from './KawaiiDecorations';
+import { KawaiiBow, KawaiiSparkle } from './KawaiiDecorations';
 import {
   Sparkles,
   AlertTriangle,
@@ -75,7 +68,7 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
   };
 
   const applyGuestDelta = (delta: number) => {
-    setSimGuestCount(prev => Math.max(1, prev + delta));
+    setSimGuestCount((prev) => Math.max(1, prev + delta));
   };
 
   const handleConsultAi = async () => {
@@ -121,7 +114,7 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
     if (aiProposal?.proposedTimelineAdjustments) {
       for (const adj of aiProposal.proposedTimelineAdjustments) {
         if (adj.taskId) {
-          updatedTasks = updatedTasks.map(t =>
+          updatedTasks = updatedTasks.map((t) =>
             t.id === adj.taskId ? { ...t, dueDate: adj.newDueDate } : t
           );
         }
@@ -133,7 +126,7 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
     if (aiProposal?.proposedExpenseAdjustments) {
       for (const adj of aiProposal.proposedExpenseAdjustments) {
         if (adj.expenseId) {
-          updatedExpenses = updatedExpenses.map(e =>
+          updatedExpenses = updatedExpenses.map((e) =>
             e.id === adj.expenseId
               ? { ...e, estimatedCostPaise: adj.newEstimatedCostPaise, priority: adj.priority }
               : e
@@ -141,10 +134,11 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
         } else {
           // Check if an expense with similar name exists
           const existing = updatedExpenses.find(
-            e => e.category === adj.category || e.name.toLowerCase().includes(adj.name.toLowerCase())
+            (e) =>
+              e.category === adj.category || e.name.toLowerCase().includes(adj.name.toLowerCase())
           );
           if (existing && existing.actualCostPaise === null) {
-            updatedExpenses = updatedExpenses.map(e =>
+            updatedExpenses = updatedExpenses.map((e) =>
               e.id === existing.id
                 ? {
                     ...e,
@@ -200,7 +194,8 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
               </span>
             </div>
             <p className="text-xs text-plum-light font-medium mt-0.5">
-              Simulate budget cuts, guest surges, or date changes with deterministic consequence analysis & AI trade-offs.
+              Simulate budget cuts, guest surges, or date changes with deterministic consequence
+              analysis & AI trade-offs.
             </p>
           </div>
 
@@ -229,7 +224,8 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
           >
             <ShieldCheck className="w-4 h-4 text-green-700 shrink-0" />
             <span>
-              🎉 Approved changes have been successfully applied to your active event plan and saved to storage!
+              🎉 Approved changes have been successfully applied to your active event plan and saved
+              to storage!
             </span>
           </div>
         )}
@@ -265,7 +261,7 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
             <input
               type="text"
               value={simBudgetRupees}
-              onChange={e => setSimBudgetRupees(e.target.value)}
+              onChange={(e) => setSimBudgetRupees(e.target.value)}
               className="w-full pl-7 pr-3 py-2 bg-cream-50 border-2 border-plum rounded-xl font-heading font-bold text-base text-plum"
             />
           </div>
@@ -306,9 +302,7 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
               <Users className="w-4 h-4 text-plum" />
               <span>Guest Count</span>
             </div>
-            <span className="text-[11px] text-plum-light">
-              Current: {plan.guestCount} guests
-            </span>
+            <span className="text-[11px] text-plum-light">Current: {plan.guestCount} guests</span>
           </div>
 
           <div className="flex items-center gap-3 mb-3">
@@ -318,7 +312,7 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
               max="500"
               step="5"
               value={simGuestCount}
-              onChange={e => setSimGuestCount(parseInt(e.target.value))}
+              onChange={(e) => setSimGuestCount(parseInt(e.target.value))}
               className="w-full accent-plum"
             />
             <span className="font-heading font-bold text-lg text-plum w-14 text-right">
@@ -363,7 +357,7 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
           <input
             type="date"
             value={simEventDate}
-            onChange={e => setSimEventDate(e.target.value)}
+            onChange={(e) => setSimEventDate(e.target.value)}
             className="w-full px-3 py-2 bg-cream-50 border-2 border-plum rounded-xl font-heading font-bold text-sm text-plum mb-3"
           />
 
@@ -371,8 +365,8 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
             {deterministicResult.daysShifted === 0
               ? '✨ Same date (No timeline shift)'
               : deterministicResult.daysShifted < 0
-              ? `⚡ Date accelerated by ${Math.abs(deterministicResult.daysShifted)} days!`
-              : `⏳ Date postponed by ${deterministicResult.daysShifted} days.`}
+                ? `⚡ Date accelerated by ${Math.abs(deterministicResult.daysShifted)} days!`
+                : `⏳ Date postponed by ${deterministicResult.daysShifted} days.`}
           </div>
         </div>
       </div>
@@ -476,9 +470,7 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
                 Step 3 & 4: Before vs After & Trade-Off Breakdown
               </h2>
             </div>
-            <span className="kawaii-badge bg-butter-200 text-plum text-xs">
-              AI Proposal Ready
-            </span>
+            <span className="kawaii-badge bg-butter-200 text-plum text-xs">AI Proposal Ready</span>
           </div>
 
           {/* Side by side comparison */}
@@ -554,7 +546,10 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
               </div>
               <ul className="space-y-1.5 text-xs text-plum font-medium">
                 {aiProposal.tradeOffs.map((tradeoff, i) => (
-                  <li key={i} className="flex items-start gap-2 bg-white/70 p-2 rounded-lg border border-plum/15">
+                  <li
+                    key={i}
+                    className="flex items-start gap-2 bg-white/70 p-2 rounded-lg border border-plum/15"
+                  >
                     <span className="shrink-0">⚖️</span>
                     <span>{tradeoff}</span>
                   </li>
@@ -596,7 +591,8 @@ export const WhatIfSimulatorTab: React.FC<WhatIfSimulatorTabProps> = ({
                 <span>Explicit Review & Approval Required</span>
               </div>
               <p className="text-[11px] text-plum-light mt-0.5">
-                Applying these changes will update your budget limit, guest count, and timeline while safely preserving your historical invoiced expenses and completed tasks.
+                Applying these changes will update your budget limit, guest count, and timeline
+                while safely preserving your historical invoiced expenses and completed tasks.
               </p>
             </div>
 

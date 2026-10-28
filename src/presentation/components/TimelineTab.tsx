@@ -5,11 +5,7 @@ import {
   validateDependencies,
   calculateDaysBetween,
 } from '../../domain/timeline';
-import {
-  KawaiiBow,
-  KawaiiSparkle,
-  KawaiiFlower,
-} from './KawaiiDecorations';
+import { KawaiiBow, KawaiiSparkle, KawaiiFlower } from './KawaiiDecorations';
 import {
   Plus,
   Trash2,
@@ -48,17 +44,14 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
   const dependencyValidation = validateDependencies(plan.tasks);
   const topologicallyOrderedTasks = getTopologicalOrder(plan.tasks);
 
-  const filteredTasks = statusFilter === 'all'
-    ? topologicallyOrderedTasks
-    : topologicallyOrderedTasks.filter(t => t.status === statusFilter);
+  const filteredTasks =
+    statusFilter === 'all'
+      ? topologicallyOrderedTasks
+      : topologicallyOrderedTasks.filter((t) => t.status === statusFilter);
 
   const handleToggleTaskStatus = (task: Task) => {
     const nextStatus: TaskStatus =
-      task.status === 'todo'
-        ? 'in_progress'
-        : task.status === 'in_progress'
-        ? 'completed'
-        : 'todo';
+      task.status === 'todo' ? 'in_progress' : task.status === 'in_progress' ? 'completed' : 'todo';
 
     if (nextStatus === 'completed') {
       try {
@@ -73,19 +66,17 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
       }
     }
 
-    const updated = plan.tasks.map(t =>
-      t.id === task.id ? { ...t, status: nextStatus } : t
-    );
+    const updated = plan.tasks.map((t) => (t.id === task.id ? { ...t, status: nextStatus } : t));
     onUpdateTasks(updated);
   };
 
   const handleDeleteTask = (id: string) => {
     // Also remove this task ID from any dependencies of other tasks
     const updated = plan.tasks
-      .filter(t => t.id !== id)
-      .map(t => ({
+      .filter((t) => t.id !== id)
+      .map((t) => ({
         ...t,
-        dependencies: t.dependencies.filter(depId => depId !== id),
+        dependencies: t.dependencies.filter((depId) => depId !== id),
       }));
     onUpdateTasks(updated);
   };
@@ -114,7 +105,7 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
 
   const toggleDependency = (depId: string) => {
     if (newDependencies.includes(depId)) {
-      setNewDependencies(newDependencies.filter(id => id !== depId));
+      setNewDependencies(newDependencies.filter((id) => id !== depId));
     } else {
       setNewDependencies([...newDependencies, depId]);
     }
@@ -134,7 +125,8 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
               <KawaiiSparkle size={16} />
             </div>
             <p className="text-xs text-plum-light font-medium mt-0.5">
-              Deterministic task scheduling with dependency graph validation and automated cycle detection.
+              Deterministic task scheduling with dependency graph validation and automated cycle
+              detection.
             </p>
           </div>
 
@@ -170,7 +162,7 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
           <div className="flex items-center gap-1.5 text-xs font-bold text-plum">
             <Filter className="w-3.5 h-3.5" />
             <span>Filter Status:</span>
-            {(['all', 'todo', 'in_progress', 'completed'] as const).map(st => (
+            {(['all', 'todo', 'in_progress', 'completed'] as const).map((st) => (
               <button
                 key={st}
                 onClick={() => setStatusFilter(st)}
@@ -186,7 +178,8 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
           </div>
 
           <div className="text-xs text-plum-light font-medium">
-            Event Date: {new Date(plan.eventDate).toLocaleDateString('en-IN', { dateStyle: 'long' })}
+            Event Date:{' '}
+            {new Date(plan.eventDate).toLocaleDateString('en-IN', { dateStyle: 'long' })}
           </div>
         </div>
       </div>
@@ -202,7 +195,7 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
           filteredTasks.map((task, index) => {
             const isOverdue = task.status !== 'completed' && task.dueDate < todayStr;
             const daysLeft = calculateDaysBetween(todayStr, task.dueDate);
-            const depTasks = plan.tasks.filter(t => task.dependencies.includes(t.id));
+            const depTasks = plan.tasks.filter((t) => task.dependencies.includes(t.id));
 
             return (
               <div
@@ -222,8 +215,8 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
                         task.status === 'completed'
                           ? 'bg-mint-300'
                           : task.status === 'in_progress'
-                          ? 'bg-butter-200'
-                          : 'bg-white hover:bg-lavender-100'
+                            ? 'bg-butter-200'
+                            : 'bg-white hover:bg-lavender-100'
                       }`}
                     >
                       {task.status === 'completed' ? (
@@ -250,8 +243,8 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
                             task.priority === 'high'
                               ? 'bg-blush-200 text-plum'
                               : task.priority === 'medium'
-                              ? 'bg-butter-200 text-plum'
-                              : 'bg-iceBlue-200 text-plum'
+                                ? 'bg-butter-200 text-plum'
+                                : 'bg-iceBlue-200 text-plum'
                           }`}
                         >
                           {task.priority} Priority
@@ -274,7 +267,7 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
                         <div className="flex items-center gap-1.5 mt-2 flex-wrap text-[11px] font-medium text-plum">
                           <Link className="w-3 h-3 text-plum-light" />
                           <span className="text-plum-light">Prerequisites:</span>
-                          {depTasks.map(dep => (
+                          {depTasks.map((dep) => (
                             <span
                               key={dep.id}
                               className={`px-1.5 py-0.5 rounded border text-[10px] ${
@@ -299,8 +292,8 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
                         task.status === 'completed'
                           ? 'bg-mint-200 text-plum'
                           : isOverdue
-                          ? 'bg-blush-200 text-red-800 animate-bounce'
-                          : 'bg-butter-100 text-plum'
+                            ? 'bg-blush-200 text-red-800 animate-bounce'
+                            : 'bg-butter-100 text-plum'
                       }`}
                     >
                       <Calendar className="w-3 h-3" />
@@ -364,18 +357,20 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
                   required
                   placeholder="e.g. Taste & Select Cake Flavors"
                   value={newTitle}
-                  onChange={e => setNewTitle(e.target.value)}
+                  onChange={(e) => setNewTitle(e.target.value)}
                   className="w-full px-3 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum font-semibold"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase mb-1">Description / Brief</label>
+                <label className="block text-xs font-bold uppercase mb-1">
+                  Description / Brief
+                </label>
                 <textarea
                   rows={2}
                   placeholder="Action items, contact person, or specifications"
                   value={newDescription}
-                  onChange={e => setNewDescription(e.target.value)}
+                  onChange={(e) => setNewDescription(e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border-2 border-plum rounded-xl text-xs text-plum"
                 />
               </div>
@@ -387,7 +382,7 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
                     type="date"
                     required
                     value={newDueDate}
-                    onChange={e => setNewDueDate(e.target.value)}
+                    onChange={(e) => setNewDueDate(e.target.value)}
                     className="w-full px-3 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum"
                   />
                 </div>
@@ -396,7 +391,7 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
                   <label className="block text-xs font-bold uppercase mb-1">Priority</label>
                   <select
                     value={newPriority}
-                    onChange={e => setNewPriority(e.target.value as TaskPriority)}
+                    onChange={(e) => setNewPriority(e.target.value as TaskPriority)}
                     className="w-full px-2.5 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum font-semibold"
                   >
                     <option value="high">High</option>
@@ -407,10 +402,12 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase mb-1">Associated Vendor Category</label>
+                <label className="block text-xs font-bold uppercase mb-1">
+                  Associated Vendor Category
+                </label>
                 <select
                   value={newVendorCategory}
-                  onChange={e => setNewVendorCategory(e.target.value as ExpenseCategory | '')}
+                  onChange={(e) => setNewVendorCategory(e.target.value as ExpenseCategory | '')}
                   className="w-full px-2.5 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum font-semibold"
                 >
                   <option value="">None (Independent task)</option>
@@ -428,10 +425,15 @@ export const TimelineTab: React.FC<TimelineTabProps> = ({ plan, onUpdateTasks })
               {/* Dependency picker */}
               {plan.tasks.length > 0 && (
                 <div>
-                  <label className="block text-xs font-bold uppercase mb-1">Prerequisite Dependencies</label>
+                  <label className="block text-xs font-bold uppercase mb-1">
+                    Prerequisite Dependencies
+                  </label>
                   <div className="max-h-28 overflow-y-auto border border-plum/30 rounded-xl p-2 bg-white space-y-1">
-                    {plan.tasks.map(t => (
-                      <label key={t.id} className="flex items-center gap-2 text-xs text-plum cursor-pointer">
+                    {plan.tasks.map((t) => (
+                      <label
+                        key={t.id}
+                        className="flex items-center gap-2 text-xs text-plum cursor-pointer"
+                      >
                         <input
                           type="checkbox"
                           checked={newDependencies.includes(t.id)}

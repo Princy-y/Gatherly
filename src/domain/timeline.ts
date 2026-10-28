@@ -10,7 +10,7 @@ export interface CycleDetectionResult {
  * Returns true and the offending cycle path if a circular dependency is detected.
  */
 export function detectCycle(tasks: Task[]): CycleDetectionResult {
-  const taskMap = new Map<string, Task>(tasks.map(t => [t.id, t]));
+  const taskMap = new Map<string, Task>(tasks.map((t) => [t.id, t]));
   const visited = new Set<string>();
   const recursionStack = new Set<string>();
   const parentTrack = new Map<string, string>();
@@ -71,7 +71,7 @@ export function detectCycle(tasks: Task[]): CycleDetectionResult {
  */
 export function validateDependencies(tasks: Task[]): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
-  const taskIds = new Set(tasks.map(t => t.id));
+  const taskIds = new Set(tasks.map((t) => t.id));
 
   for (const task of tasks) {
     for (const depId of task.dependencies) {
@@ -106,7 +106,7 @@ export function getTopologicalOrder(tasks: Task[]): Task[] {
     return [...tasks].sort((a, b) => a.dueDate.localeCompare(b.dueDate));
   }
 
-  const taskMap = new Map<string, Task>(tasks.map(t => [t.id, t]));
+  const taskMap = new Map<string, Task>(tasks.map((t) => [t.id, t]));
   const inDegree = new Map<string, number>();
   const adj = new Map<string, string[]>();
 
@@ -147,7 +147,7 @@ export function getTopologicalOrder(tasks: Task[]): Task[] {
 
   // If any unvisited remaining (e.g. detached), append them
   if (ordered.length < tasks.length) {
-    const orderedIds = new Set(ordered.map(t => t.id));
+    const orderedIds = new Set(ordered.map((t) => t.id));
     for (const t of tasks) {
       if (!orderedIds.has(t.id)) {
         ordered.push(t);
@@ -172,11 +172,15 @@ export function calculateDaysBetween(fromDateStr: string, toDateStr: string): nu
  * Shifts all uncompleted task due dates by the date difference when an event date moves.
  * Completed tasks keep their historical completion dates.
  */
-export function shiftTaskDates(tasks: Task[], oldEventDateStr: string, newEventDateStr: string): Task[] {
+export function shiftTaskDates(
+  tasks: Task[],
+  oldEventDateStr: string,
+  newEventDateStr: string
+): Task[] {
   const deltaDays = calculateDaysBetween(oldEventDateStr, newEventDateStr);
   if (deltaDays === 0) return tasks;
 
-  return tasks.map(task => {
+  return tasks.map((task) => {
     // Preserve completed tasks
     if (task.status === 'completed') {
       return task;
@@ -201,7 +205,7 @@ export function shiftTaskDates(tasks: Task[], oldEventDateStr: string, newEventD
  */
 export function identifyConflictingTasks(tasks: Task[], eventDateStr: string): string[] {
   const conflictingIds: string[] = [];
-  const taskMap = new Map<string, Task>(tasks.map(t => [t.id, t]));
+  const taskMap = new Map<string, Task>(tasks.map((t) => [t.id, t]));
 
   for (const task of tasks) {
     // Due date after event date is impossible

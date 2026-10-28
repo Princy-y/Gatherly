@@ -6,18 +6,8 @@ import {
   ExpenseCategory,
 } from '../../domain/types';
 import { formatINR, parseRupeesInput } from '../../domain/currency';
-import {
-  KawaiiBow,
-  KawaiiSparkle,
-  KawaiiFlower,
-} from './KawaiiDecorations';
-import {
-  Plus,
-  Trash2,
-  Phone,
-  Info,
-  X,
-} from 'lucide-react';
+import { KawaiiBow, KawaiiSparkle, KawaiiFlower } from './KawaiiDecorations';
+import { Plus, Trash2, Phone, Info, X } from 'lucide-react';
 
 interface VendorChecklistTabProps {
   plan: EventPlan;
@@ -40,19 +30,20 @@ export const VendorChecklistTab: React.FC<VendorChecklistTabProps> = ({
   const [newContactInfo, setNewContactInfo] = useState('');
   const [newNotes, setNewNotes] = useState('');
 
-  const filteredVendors = categoryFilter === 'all'
-    ? plan.vendors
-    : plan.vendors.filter(v => v.category === categoryFilter);
+  const filteredVendors =
+    categoryFilter === 'all'
+      ? plan.vendors
+      : plan.vendors.filter((v) => v.category === categoryFilter);
 
   const handleStatusChange = (vendorId: string, status: VendorBookingStatus) => {
-    const updated = plan.vendors.map(v =>
+    const updated = plan.vendors.map((v) =>
       v.id === vendorId ? { ...v, bookingStatus: status } : v
     );
     onUpdateVendors(updated);
   };
 
   const handleDeleteVendor = (vendorId: string) => {
-    onUpdateVendors(plan.vendors.filter(v => v.id !== vendorId));
+    onUpdateVendors(plan.vendors.filter((v) => v.id !== vendorId));
   };
 
   const handleAddVendor = (e: React.FormEvent) => {
@@ -111,14 +102,26 @@ export const VendorChecklistTab: React.FC<VendorChecklistTabProps> = ({
         <div className="mt-4 p-3 rounded-xl bg-butter-50 border border-plum/30 text-xs text-plum flex items-center gap-2">
           <Info className="w-4 h-4 text-plum shrink-0" />
           <span>
-            <strong>Note on Vendor Data:</strong> Gatherly AI does not invent fictional vendor profiles or unverified ratings. All vendor contacts and status flags reflect user-verified planning records.
+            <strong>Note on Vendor Data:</strong> Gatherly AI does not invent fictional vendor
+            profiles or unverified ratings. All vendor contacts and status flags reflect
+            user-verified planning records.
           </span>
         </div>
 
         {/* Category Filters */}
         <div className="flex flex-wrap items-center gap-1.5 mt-4 text-xs font-bold text-plum">
           <span>Category:</span>
-          {(['all', 'venue', 'catering', 'photography', 'decoration', 'entertainment', 'permits'] as const).map(cat => (
+          {(
+            [
+              'all',
+              'venue',
+              'catering',
+              'photography',
+              'decoration',
+              'entertainment',
+              'permits',
+            ] as const
+          ).map((cat) => (
             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
@@ -142,33 +145,36 @@ export const VendorChecklistTab: React.FC<VendorChecklistTabProps> = ({
             <p className="font-bold text-sm">No vendor tracks found for this category.</p>
           </div>
         ) : (
-          filteredVendors.map(vendor => (
-            <div key={vendor.id} className="scrapbook-card p-5 bg-white flex flex-col justify-between">
+          filteredVendors.map((vendor) => (
+            <div
+              key={vendor.id}
+              className="scrapbook-card p-5 bg-white flex flex-col justify-between"
+            >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div>
                     <span className="kawaii-badge bg-lavender-100 text-plum text-[10px] uppercase font-bold mb-1">
                       {vendor.category}
                     </span>
-                    <h3 className="font-heading font-bold text-base text-plum">
-                      {vendor.title}
-                    </h3>
+                    <h3 className="font-heading font-bold text-base text-plum">{vendor.title}</h3>
                   </div>
 
                   <select
                     value={vendor.bookingStatus}
-                    onChange={e => handleStatusChange(vendor.id, e.target.value as VendorBookingStatus)}
+                    onChange={(e) =>
+                      handleStatusChange(vendor.id, e.target.value as VendorBookingStatus)
+                    }
                     aria-label={`Booking status for ${vendor.title}`}
                     className={`text-xs font-bold rounded-xl px-2.5 py-1 border border-plum transition-all ${
                       vendor.bookingStatus === 'booked'
                         ? 'bg-mint-200 text-plum'
                         : vendor.bookingStatus === 'shortlisted'
-                        ? 'bg-butter-200 text-plum'
-                        : vendor.bookingStatus === 'contacted'
-                        ? 'bg-iceBlue-200 text-plum'
-                        : vendor.bookingStatus === 'declined'
-                        ? 'bg-blush-200 text-red-800'
-                        : 'bg-cream-100 text-plum-light'
+                          ? 'bg-butter-200 text-plum'
+                          : vendor.bookingStatus === 'contacted'
+                            ? 'bg-iceBlue-200 text-plum'
+                            : vendor.bookingStatus === 'declined'
+                              ? 'bg-blush-200 text-red-800'
+                              : 'bg-cream-100 text-plum-light'
                     }`}
                   >
                     <option value="not_started">⚪ Not Started</option>
@@ -195,7 +201,9 @@ export const VendorChecklistTab: React.FC<VendorChecklistTabProps> = ({
 
               <div className="mt-4 pt-3 border-t border-plum/15 flex items-center justify-between text-xs font-bold">
                 <span className="text-plum">
-                  {vendor.estimatedCostPaise ? `Est: ${formatINR(vendor.estimatedCostPaise)}` : 'Cost TBD'}
+                  {vendor.estimatedCostPaise
+                    ? `Est: ${formatINR(vendor.estimatedCostPaise)}`
+                    : 'Cost TBD'}
                 </span>
                 <button
                   onClick={() => handleDeleteVendor(vendor.id)}
@@ -233,13 +241,15 @@ export const VendorChecklistTab: React.FC<VendorChecklistTabProps> = ({
 
             <form onSubmit={handleAddVendor} className="space-y-3">
               <div>
-                <label className="block text-xs font-bold uppercase mb-1">Vendor / Service Name *</label>
+                <label className="block text-xs font-bold uppercase mb-1">
+                  Vendor / Service Name *
+                </label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Royal Banquet & Lawns"
                   value={newTitle}
-                  onChange={e => setNewTitle(e.target.value)}
+                  onChange={(e) => setNewTitle(e.target.value)}
                   className="w-full px-3 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum font-semibold"
                 />
               </div>
@@ -249,7 +259,7 @@ export const VendorChecklistTab: React.FC<VendorChecklistTabProps> = ({
                   <label className="block text-xs font-bold uppercase mb-1">Category</label>
                   <select
                     value={newCategory}
-                    onChange={e => setNewCategory(e.target.value as ExpenseCategory)}
+                    onChange={(e) => setNewCategory(e.target.value as ExpenseCategory)}
                     className="w-full px-2.5 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum font-semibold"
                   >
                     <option value="venue">Venue</option>
@@ -266,7 +276,7 @@ export const VendorChecklistTab: React.FC<VendorChecklistTabProps> = ({
                   <label className="block text-xs font-bold uppercase mb-1">Status</label>
                   <select
                     value={newStatus}
-                    onChange={e => setNewStatus(e.target.value as VendorBookingStatus)}
+                    onChange={(e) => setNewStatus(e.target.value as VendorBookingStatus)}
                     className="w-full px-2.5 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum font-semibold"
                   >
                     <option value="not_started">Not Started</option>
@@ -278,24 +288,28 @@ export const VendorChecklistTab: React.FC<VendorChecklistTabProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase mb-1">Requirements & Scope</label>
+                <label className="block text-xs font-bold uppercase mb-1">
+                  Requirements & Scope
+                </label>
                 <textarea
                   rows={2}
                   placeholder="Seating capacity, dietary choices, hours of operation"
                   value={newRequirements}
-                  onChange={e => setNewRequirements(e.target.value)}
+                  onChange={(e) => setNewRequirements(e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border-2 border-plum rounded-xl text-xs text-plum"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-bold uppercase mb-1">Estimated Cost (₹ INR)</label>
+                  <label className="block text-xs font-bold uppercase mb-1">
+                    Estimated Cost (₹ INR)
+                  </label>
                   <input
                     type="text"
                     placeholder="e.g. 50000"
                     value={newEstimatedRupees}
-                    onChange={e => setNewEstimatedRupees(e.target.value)}
+                    onChange={(e) => setNewEstimatedRupees(e.target.value)}
                     className="w-full px-3 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum"
                   />
                 </div>
@@ -305,7 +319,7 @@ export const VendorChecklistTab: React.FC<VendorChecklistTabProps> = ({
                     type="text"
                     placeholder="e.g. +91 9876543210"
                     value={newContactInfo}
-                    onChange={e => setNewContactInfo(e.target.value)}
+                    onChange={(e) => setNewContactInfo(e.target.value)}
                     className="w-full px-3 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum"
                   />
                 </div>

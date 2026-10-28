@@ -3,10 +3,7 @@ import { EventPlan } from '../../domain/types';
 import { calculateBudgetSummary } from '../../domain/budget';
 import { calculateDaysBetween } from '../../domain/timeline';
 import { formatINR } from '../../domain/currency';
-import {
-  KawaiiBow,
-  KawaiiFlower,
-} from './KawaiiDecorations';
+import { KawaiiBow, KawaiiFlower } from './KawaiiDecorations';
 import {
   Calendar,
   Wallet,
@@ -31,15 +28,15 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ plan, onNavigateTab 
   const todayStr = new Date().toISOString().split('T')[0];
   const daysUntilEvent = calculateDaysBetween(todayStr, plan.eventDate);
 
-  const completedTasks = plan.tasks.filter(t => t.status === 'completed').length;
+  const completedTasks = plan.tasks.filter((t) => t.status === 'completed').length;
   const totalTasks = plan.tasks.length;
   const taskPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  const bookedVendors = plan.vendors.filter(v => v.bookingStatus === 'booked').length;
+  const bookedVendors = plan.vendors.filter((v) => v.bookingStatus === 'booked').length;
   const totalVendors = plan.vendors.length;
 
   const upcomingTasks = [...plan.tasks]
-    .filter(t => t.status !== 'completed')
+    .filter((t) => t.status !== 'completed')
     .sort((a, b) => a.dueDate.localeCompare(b.dueDate))
     .slice(0, 4);
 
@@ -131,7 +128,8 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ plan, onNavigateTab 
                 Budget Overrun Detected ({formatINR(budgetSummary.overrunPaise)} over limit)
               </div>
               <p className="text-xs text-plum-light">
-                Committed expenses exceed your allocated ₹{formatINR(plan.budgetLimitPaise)} budget. Use the What-If Simulator or Budget Studio to rebalance.
+                Committed expenses exceed your allocated ₹{formatINR(plan.budgetLimitPaise)} budget.
+                Use the What-If Simulator or Budget Studio to rebalance.
               </p>
             </div>
           </div>
@@ -184,9 +182,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ plan, onNavigateTab 
           <div className="font-heading font-bold text-xl sm:text-2xl text-plum">
             {formatINR(budgetSummary.totalActualPaise)}
           </div>
-          <div className="text-[11px] text-plum-light mt-1">
-            Confirmed invoiced costs
-          </div>
+          <div className="text-[11px] text-plum-light mt-1">Confirmed invoiced costs</div>
         </div>
 
         {/* Remaining or Overrun */}
@@ -222,9 +218,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ plan, onNavigateTab 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <KawaiiBow size={20} />
-                <h2 className="font-heading font-bold text-lg text-plum">
-                  Timeline Progress
-                </h2>
+                <h2 className="font-heading font-bold text-lg text-plum">Timeline Progress</h2>
               </div>
               <button
                 onClick={() => onNavigateTab('timeline')}
@@ -238,7 +232,9 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ plan, onNavigateTab 
             {/* Progress bar */}
             <div className="mb-4">
               <div className="flex justify-between text-xs font-bold text-plum mb-1.5">
-                <span>{completedTasks} of {totalTasks} Tasks Completed</span>
+                <span>
+                  {completedTasks} of {totalTasks} Tasks Completed
+                </span>
                 <span>{taskPercent}%</span>
               </div>
               <div
@@ -266,7 +262,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ plan, onNavigateTab 
                   🎉 All tasks are up to date! Great job!
                 </div>
               ) : (
-                upcomingTasks.map(task => (
+                upcomingTasks.map((task) => (
                   <div
                     key={task.id}
                     className="p-2.5 rounded-xl border border-plum/30 bg-cream-50 flex items-center justify-between gap-3 text-xs"
@@ -300,9 +296,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ plan, onNavigateTab 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <KawaiiFlower size={20} />
-                <h2 className="font-heading font-bold text-lg text-plum">
-                  Vendor Checkpoints
-                </h2>
+                <h2 className="font-heading font-bold text-lg text-plum">Vendor Checkpoints</h2>
               </div>
               <button
                 onClick={() => onNavigateTab('vendors')}
@@ -315,20 +309,28 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ plan, onNavigateTab 
 
             <div className="mb-4">
               <div className="flex justify-between text-xs font-bold text-plum mb-1.5">
-                <span>{bookedVendors} of {totalVendors} Vendors Booked</span>
-                <span>{totalVendors > 0 ? Math.round((bookedVendors / totalVendors) * 100) : 0}%</span>
+                <span>
+                  {bookedVendors} of {totalVendors} Vendors Booked
+                </span>
+                <span>
+                  {totalVendors > 0 ? Math.round((bookedVendors / totalVendors) * 100) : 0}%
+                </span>
               </div>
               <div
                 role="progressbar"
                 aria-label="Vendor booking progress"
-                aria-valuenow={totalVendors > 0 ? Math.round((bookedVendors / totalVendors) * 100) : 0}
+                aria-valuenow={
+                  totalVendors > 0 ? Math.round((bookedVendors / totalVendors) * 100) : 0
+                }
                 aria-valuemin={0}
                 aria-valuemax={100}
                 className="w-full h-3.5 bg-cream-200 border-2 border-plum rounded-full overflow-hidden"
               >
                 <div
                   className="h-full bg-lavender-300 transition-all duration-500 rounded-full"
-                  style={{ width: `${totalVendors > 0 ? (bookedVendors / totalVendors) * 100 : 0}%` }}
+                  style={{
+                    width: `${totalVendors > 0 ? (bookedVendors / totalVendors) * 100 : 0}%`,
+                  }}
                 />
               </div>
             </div>
@@ -338,7 +340,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ plan, onNavigateTab 
               <div className="text-xs font-bold text-plum-light uppercase tracking-wider mb-1">
                 Active Vendor Tracks:
               </div>
-              {plan.vendors.slice(0, 4).map(v => (
+              {plan.vendors.slice(0, 4).map((v) => (
                 <div
                   key={v.id}
                   className="p-2.5 rounded-xl border border-plum/30 bg-cream-50 flex items-center justify-between gap-3 text-xs"
@@ -352,8 +354,8 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ plan, onNavigateTab 
                       v.bookingStatus === 'booked'
                         ? 'bg-mint-200 text-plum'
                         : v.bookingStatus === 'shortlisted'
-                        ? 'bg-butter-200 text-plum'
-                        : 'bg-cream-200 text-plum-light'
+                          ? 'bg-butter-200 text-plum'
+                          : 'bg-cream-200 text-plum-light'
                     }`}
                   >
                     {v.bookingStatus.replace('_', ' ')}

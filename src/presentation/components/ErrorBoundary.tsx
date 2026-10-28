@@ -52,7 +52,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           role="alert"
           className="min-h-[200px] flex flex-col items-center justify-center gap-4 p-8 bg-blush-100 border-2 border-plum rounded-2xl text-center text-plum"
         >
-          <div className="text-4xl" aria-hidden="true">🎀</div>
+          <div className="text-4xl" aria-hidden="true">
+            🎀
+          </div>
           <h2 className="font-heading font-bold text-xl">Something went a little sideways…</h2>
           <p className="text-sm text-plum-light max-w-md">
             An unexpected error occurred in this section. Your event data is safe in local storage.

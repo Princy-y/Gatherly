@@ -75,7 +75,7 @@ describe('Constraint-Aware Re-planning Engine', () => {
 
     expect(result.budgetDeltaPaise).toBe(-2000000);
     expect(result.budgetOverrunPaise).toBe(2500000); // 105k - 80k = 25k
-    expect(result.deterministicWarnings.some(w => w.includes('Budget Overrun'))).toBe(true);
+    expect(result.deterministicWarnings.some((w) => w.includes('Budget Overrun'))).toBe(true);
   });
 
   it('flags catering and venue expenses when guest count increases', () => {
@@ -86,7 +86,7 @@ describe('Constraint-Aware Re-planning Engine', () => {
     expect(result.guestCountDelta).toBe(50);
     expect(result.affectedExpenseIds).toContain('e1');
     expect(result.affectedExpenseIds).toContain('e2');
-    expect(result.deterministicWarnings.some(w => w.includes('Guest Increase'))).toBe(true);
+    expect(result.deterministicWarnings.some((w) => w.includes('Guest Increase'))).toBe(true);
   });
 
   it('flags date compression and timeline conflicts when event date is moved up', () => {
@@ -97,6 +97,10 @@ describe('Constraint-Aware Re-planning Engine', () => {
 
     expect(result.daysShifted).toBe(-15);
     expect(result.conflictingTaskIds).toContain('t2');
-    expect(result.deterministicWarnings.some(w => w.includes('Timeline compression') || w.includes('Date Moved Earlier'))).toBe(true);
+    expect(
+      result.deterministicWarnings.some(
+        (w) => w.includes('Timeline compression') || w.includes('Date Moved Earlier')
+      )
+    ).toBe(true);
   });
 });

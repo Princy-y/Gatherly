@@ -1,8 +1,4 @@
-import {
-  EventPlan,
-  ConstraintChanges,
-  DeterministicSimulationResult,
-} from './types';
+import { EventPlan, ConstraintChanges, DeterministicSimulationResult } from './types';
 import { calculateBudgetSummary } from './budget';
 import { calculateDaysBetween, identifyConflictingTasks } from './timeline';
 import { paiseToRupees } from './currency';
@@ -24,15 +20,16 @@ export function simulateConstraintImpact(
   const affectedExpenseIds: string[] = [];
 
   // 1. Budget changes
-  const newBudgetLimitPaise = changes.newBudgetLimitPaise !== undefined
-    ? changes.newBudgetLimitPaise
-    : currentPlan.budgetLimitPaise;
+  const newBudgetLimitPaise =
+    changes.newBudgetLimitPaise !== undefined
+      ? changes.newBudgetLimitPaise
+      : currentPlan.budgetLimitPaise;
 
   const budgetDeltaPaise = newBudgetLimitPaise - currentPlan.budgetLimitPaise;
 
   // Filter out removed expenses if any
   const simulatedExpenses = currentPlan.expenses.filter(
-    exp => !changes.removedExpenseIds?.includes(exp.id)
+    (exp) => !changes.removedExpenseIds?.includes(exp.id)
   );
 
   const budgetSummary = calculateBudgetSummary(newBudgetLimitPaise, simulatedExpenses);
@@ -44,14 +41,15 @@ export function simulateConstraintImpact(
   }
 
   // 2. Guest count changes
-  const newGuestCount = changes.newGuestCount !== undefined
-    ? changes.newGuestCount
-    : currentPlan.guestCount;
+  const newGuestCount =
+    changes.newGuestCount !== undefined ? changes.newGuestCount : currentPlan.guestCount;
 
   const guestCountDelta = newGuestCount - currentPlan.guestCount;
   if (guestCountDelta > 0) {
-    const cateringExpenses = simulatedExpenses.filter(e => e.category === 'catering' || e.category === 'venue');
-    cateringExpenses.forEach(e => affectedExpenseIds.push(e.id));
+    const cateringExpenses = simulatedExpenses.filter(
+      (e) => e.category === 'catering' || e.category === 'venue'
+    );
+    cateringExpenses.forEach((e) => affectedExpenseIds.push(e.id));
 
     warnings.push(
       `Guest Increase (+${guestCountDelta} guests): Catering and venue capacity will require per-head scaling or vendor renegotiation.`
@@ -90,7 +88,7 @@ export function simulateConstraintImpact(
   if (changes.priorityAdjustments && changes.priorityAdjustments.length > 0) {
     for (const adj of changes.priorityAdjustments) {
       affectedExpenseIds.push(adj.expenseId);
-      const exp = currentPlan.expenses.find(e => e.id === adj.expenseId);
+      const exp = currentPlan.expenses.find((e) => e.id === adj.expenseId);
       if (exp) {
         warnings.push(`Priority of "${exp.name}" shifted to "${adj.newPriority}".`);
       }

@@ -83,8 +83,8 @@ describe('Deterministic Budget Engine', () => {
 
   it('calculates priority breakdown with item counts and percentage', () => {
     const breakdown = calculatePriorityBreakdown(10000000, sampleExpenses);
-    const essential = breakdown.find(b => b.priority === 'essential');
-    const optional = breakdown.find(b => b.priority === 'optional');
+    const essential = breakdown.find((b) => b.priority === 'essential');
+    const optional = breakdown.find((b) => b.priority === 'optional');
 
     expect(essential?.itemCount).toBe(2);
     expect(essential?.totalPaise).toBe(7800000); // 48k + 30k
@@ -103,7 +103,7 @@ describe('Deterministic Budget Engine', () => {
     expect(savings[0].potentialSavingPaise).toBe(1500000);
 
     // Preferred item should offer renegotiation/trim
-    const preferredTrim = savings.find(s => s.strategy === 'reduce_preferred');
+    const preferredTrim = savings.find((s) => s.strategy === 'reduce_preferred');
     expect(preferredTrim).toBeDefined();
     expect(preferredTrim?.name).toBe('Drone & Candid Photo');
     expect(preferredTrim?.potentialSavingPaise).toBe(500000); // 25% of 20,000 = 5,000
@@ -123,7 +123,7 @@ describe('Deterministic Budget Engine', () => {
 
     const emptyPriorities = calculatePriorityBreakdown(0, []);
     expect(emptyPriorities).toHaveLength(3);
-    expect(emptyPriorities.every(p => p.totalPaise === 0 && p.itemCount === 0)).toBe(true);
+    expect(emptyPriorities.every((p) => p.totalPaise === 0 && p.itemCount === 0)).toBe(true);
 
     const emptySavings = generateDeterministicSavings(0, []);
     expect(emptySavings).toEqual([]);

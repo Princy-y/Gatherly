@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import {
-  EventPlan,
-  Expense,
-  ExpenseCategory,
-  ExpensePriority,
-} from '../../domain/types';
+import { EventPlan, Expense, ExpenseCategory, ExpensePriority } from '../../domain/types';
 import {
   calculateBudgetSummary,
   calculateCategoryBreakdown,
@@ -12,18 +7,8 @@ import {
   DeterministicSavingOption,
 } from '../../domain/budget';
 import { formatINR, parseRupeesInput, paiseToRupees } from '../../domain/currency';
-import {
-  KawaiiBow,
-  KawaiiSparkle,
-} from './KawaiiDecorations';
-import {
-  Plus,
-  Trash2,
-  Lightbulb,
-  Check,
-  Edit2,
-  X,
-} from 'lucide-react';
+import { KawaiiBow, KawaiiSparkle } from './KawaiiDecorations';
+import { Plus, Trash2, Lightbulb, Check, Edit2, X } from 'lucide-react';
 
 interface BudgetStudioTabProps {
   plan: EventPlan;
@@ -36,7 +21,9 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
   onUpdateExpenses,
   onUpdateBudgetLimit,
 }) => {
-  const [selectedPriorityFilter, setSelectedPriorityFilter] = useState<'all' | ExpensePriority>('all');
+  const [selectedPriorityFilter, setSelectedPriorityFilter] = useState<'all' | ExpensePriority>(
+    'all'
+  );
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isSavingsModalOpen, setIsSavingsModalOpen] = useState(false);
   const [savingsList, setSavingsList] = useState<DeterministicSavingOption[]>([]);
@@ -59,9 +46,10 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
   const summary = calculateBudgetSummary(plan.budgetLimitPaise, plan.expenses);
   const categoryBreakdowns = calculateCategoryBreakdown(plan.budgetLimitPaise, plan.expenses);
 
-  const filteredExpenses = selectedPriorityFilter === 'all'
-    ? plan.expenses
-    : plan.expenses.filter(e => e.priority === selectedPriorityFilter);
+  const filteredExpenses =
+    selectedPriorityFilter === 'all'
+      ? plan.expenses
+      : plan.expenses.filter((e) => e.priority === selectedPriorityFilter);
 
   const handleSaveBudgetLimit = () => {
     const paise = parseRupeesInput(limitInput);
@@ -94,12 +82,12 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
   };
 
   const handleDeleteExpense = (id: string) => {
-    onUpdateExpenses(plan.expenses.filter(e => e.id !== id));
+    onUpdateExpenses(plan.expenses.filter((e) => e.id !== id));
   };
 
   const handleSaveActualCost = (expense: Expense) => {
     const actualPaise = editingActualRupees === '' ? null : parseRupeesInput(editingActualRupees);
-    const updated = plan.expenses.map(e =>
+    const updated = plan.expenses.map((e) =>
       e.id === expense.id ? { ...e, actualCostPaise: actualPaise } : e
     );
     onUpdateExpenses(updated);
@@ -114,9 +102,9 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
 
   const handleApplySaving = (saving: DeterministicSavingOption) => {
     if (saving.strategy === 'eliminate_optional') {
-      onUpdateExpenses(plan.expenses.filter(e => e.id !== saving.expenseId));
+      onUpdateExpenses(plan.expenses.filter((e) => e.id !== saving.expenseId));
     } else if (saving.strategy === 'reduce_preferred') {
-      const updated = plan.expenses.map(e => {
+      const updated = plan.expenses.map((e) => {
         if (e.id === saving.expenseId) {
           return {
             ...e,
@@ -128,7 +116,7 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
       onUpdateExpenses(updated);
     }
     // Refresh recommendations list
-    const remaining = savingsList.filter(s => s.expenseId !== saving.expenseId);
+    const remaining = savingsList.filter((s) => s.expenseId !== saving.expenseId);
     setSavingsList(remaining);
   };
 
@@ -140,9 +128,7 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <KawaiiBow size={20} />
-              <h1 className="font-heading font-bold text-2xl text-plum">
-                Pastel Budget Studio
-              </h1>
+              <h1 className="font-heading font-bold text-2xl text-plum">Pastel Budget Studio</h1>
               <KawaiiSparkle size={16} />
             </div>
             <p className="text-xs text-plum-light font-medium mt-0.5">
@@ -198,8 +184,8 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
               <input
                 type="text"
                 value={limitInput}
-                onChange={e => setLimitInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleSaveBudgetLimit()}
+                onChange={(e) => setLimitInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSaveBudgetLimit()}
                 className="w-full mt-1 px-2 py-0.5 text-sm font-bold border border-plum rounded bg-white text-plum"
                 autoFocus
               />
@@ -233,7 +219,9 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
                 summary.isOverrun ? 'text-red-700' : 'text-plum'
               }`}
             >
-              {summary.isOverrun ? `-${formatINR(summary.overrunPaise)}` : formatINR(summary.remainingBudgetPaise)}
+              {summary.isOverrun
+                ? `-${formatINR(summary.overrunPaise)}`
+                : formatINR(summary.remainingBudgetPaise)}
             </div>
           </div>
         </div>
@@ -245,7 +233,7 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
           Category Distribution
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {categoryBreakdowns.map(cat => (
+          {categoryBreakdowns.map((cat) => (
             <div key={cat.category} className="p-3 rounded-xl bg-cream-50 border border-plum/20">
               <div className="flex justify-between items-center text-xs font-bold text-plum mb-1">
                 <span className="capitalize">{cat.category}</span>
@@ -272,7 +260,7 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-1.5 text-xs font-bold text-plum">
             <span>Filter Priority:</span>
-            {(['all', 'essential', 'preferred', 'optional'] as const).map(p => (
+            {(['all', 'essential', 'preferred', 'optional'] as const).map((p) => (
               <button
                 key={p}
                 onClick={() => setSelectedPriorityFilter(p)}
@@ -313,7 +301,7 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
                   </td>
                 </tr>
               ) : (
-                filteredExpenses.map(exp => {
+                filteredExpenses.map((exp) => {
                   const isEditing = editingExpenseId === exp.id;
                   return (
                     <tr key={exp.id} className="hover:bg-cream-50 transition-colors">
@@ -334,8 +322,8 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
                             exp.priority === 'essential'
                               ? 'bg-blush-200 text-plum'
                               : exp.priority === 'preferred'
-                              ? 'bg-butter-200 text-plum'
-                              : 'bg-mint-200 text-plum'
+                                ? 'bg-butter-200 text-plum'
+                                : 'bg-mint-200 text-plum'
                           }`}
                         >
                           {exp.priority}
@@ -372,8 +360,8 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
                             <input
                               type="text"
                               value={editingActualRupees}
-                              onChange={e => setEditingActualRupees(e.target.value)}
-                              onKeyDown={e => e.key === 'Enter' && handleSaveActualCost(exp)}
+                              onChange={(e) => setEditingActualRupees(e.target.value)}
+                              onKeyDown={(e) => e.key === 'Enter' && handleSaveActualCost(exp)}
                               placeholder="0"
                               className="w-20 px-1.5 py-0.5 text-xs border border-plum rounded bg-white text-plum text-right font-bold"
                               autoFocus
@@ -434,7 +422,7 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
                   required
                   placeholder="e.g. Traditional Dhol Players"
                   value={newName}
-                  onChange={e => setNewName(e.target.value)}
+                  onChange={(e) => setNewName(e.target.value)}
                   className="w-full px-3 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum"
                 />
               </div>
@@ -444,7 +432,7 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
                   <label className="block text-xs font-bold uppercase mb-1">Category</label>
                   <select
                     value={newCategory}
-                    onChange={e => setNewCategory(e.target.value as ExpenseCategory)}
+                    onChange={(e) => setNewCategory(e.target.value as ExpenseCategory)}
                     className="w-full px-2.5 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum font-semibold"
                   >
                     <option value="venue">Venue</option>
@@ -464,7 +452,7 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
                   <label className="block text-xs font-bold uppercase mb-1">Priority</label>
                   <select
                     value={newPriority}
-                    onChange={e => setNewPriority(e.target.value as ExpensePriority)}
+                    onChange={(e) => setNewPriority(e.target.value as ExpensePriority)}
                     className="w-full px-2.5 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum font-semibold"
                   >
                     <option value="essential">Essential (Must-have)</option>
@@ -475,13 +463,15 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase mb-1">Estimated Cost (₹ INR) *</label>
+                <label className="block text-xs font-bold uppercase mb-1">
+                  Estimated Cost (₹ INR) *
+                </label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. 25000"
                   value={newEstimateRupees}
-                  onChange={e => setNewEstimateRupees(e.target.value)}
+                  onChange={(e) => setNewEstimateRupees(e.target.value)}
                   className="w-full px-3 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum font-bold"
                 />
               </div>
@@ -492,7 +482,7 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
                   type="text"
                   placeholder="e.g. 2 hours performance"
                   value={newNotes}
-                  onChange={e => setNewNotes(e.target.value)}
+                  onChange={(e) => setNewNotes(e.target.value)}
                   className="w-full px-3 py-2 bg-white border-2 border-plum rounded-xl text-xs text-plum"
                 />
               </div>
@@ -541,7 +531,8 @@ export const BudgetStudioTab: React.FC<BudgetStudioTabProps> = ({
             </div>
 
             <p className="text-xs text-plum-light mb-4">
-              The engine prioritizes cuts that preserve essential pillars. Optional items are eliminated first, followed by preferred scope negotiation.
+              The engine prioritizes cuts that preserve essential pillars. Optional items are
+              eliminated first, followed by preferred scope negotiation.
             </p>
 
             {savingsList.length === 0 ? (

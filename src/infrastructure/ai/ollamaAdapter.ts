@@ -17,11 +17,7 @@ export class OllamaAdapter implements IAIProvider {
   private modelName: string;
   private timeoutMs: number;
 
-  constructor(
-    baseUrl = 'http://localhost:11434',
-    modelName = 'qwen2.5:3b',
-    timeoutMs = 45000
-  ) {
+  constructor(baseUrl = 'http://localhost:11434', modelName = 'qwen2.5:3b', timeoutMs = 45000) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.modelName = modelName;
     this.timeoutMs = timeoutMs;
@@ -49,7 +45,9 @@ export class OllamaAdapter implements IAIProvider {
 
       const data = await res.json();
       const models: { name: string }[] = data.models || [];
-      const hasModel = models.some(m => m.name.includes(this.modelName) || this.modelName.includes(m.name));
+      const hasModel = models.some(
+        (m) => m.name.includes(this.modelName) || this.modelName.includes(m.name)
+      );
 
       const latencyMs = Math.round(performance.now() - start);
       return {
@@ -250,7 +248,9 @@ Respond ONLY with a JSON object matching:
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        throw new Error(`Ollama request failed with HTTP ${response.status}: ${response.statusText}`);
+        throw new Error(
+          `Ollama request failed with HTTP ${response.status}: ${response.statusText}`
+        );
       }
 
       const body = await response.json();

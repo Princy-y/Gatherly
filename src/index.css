@@ -4,19 +4,27 @@
 
 @layer base {
   :root {
-    --cream-bg: #FFF9F5;
-    --lavender-card: #DCCEFF;
+    --cream-bg: #fff9f5;
+    --lavender-card: #dcceff;
     --plum-text: #554564;
-    --lavender-border: #B7A3D6;
+    --lavender-border: #b7a3d6;
   }
 
   body {
-    background-color: #FFF9F5;
+    background-color: #fff9f5;
     color: #554564;
-    font-family: 'Quicksand', system-ui, -apple-system, sans-serif;
+    font-family:
+      'Quicksand',
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
 
-  h1, h2, h3, h4, .font-heading {
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-heading {
     font-family: 'Comfortaa', 'Quicksand', cursive, sans-serif;
   }
 
@@ -32,24 +40,24 @@
   background-color: rgba(255, 217, 232, 0.85);
   box-shadow: 0 1px 3px rgba(85, 69, 100, 0.15);
   transform: rotate(-1.5deg);
-  border-left: 2px dashed #B7A3D6;
-  border-right: 2px dashed #B7A3D6;
+  border-left: 2px dashed #b7a3d6;
+  border-right: 2px dashed #b7a3d6;
 }
 
 .washi-tape-mint {
   background-color: rgba(213, 243, 223, 0.85);
   box-shadow: 0 1px 3px rgba(85, 69, 100, 0.15);
   transform: rotate(1.2deg);
-  border-left: 2px dashed #B7A3D6;
-  border-right: 2px dashed #B7A3D6;
+  border-left: 2px dashed #b7a3d6;
+  border-right: 2px dashed #b7a3d6;
 }
 
 .washi-tape-yellow {
   background-color: rgba(255, 240, 184, 0.85);
   box-shadow: 0 1px 3px rgba(85, 69, 100, 0.15);
   transform: rotate(-0.8deg);
-  border-left: 2px dashed #B7A3D6;
-  border-right: 2px dashed #B7A3D6;
+  border-left: 2px dashed #b7a3d6;
+  border-right: 2px dashed #b7a3d6;
 }
 
 /* Tactile Neo-Brutalist Buttons */
@@ -76,15 +84,17 @@
 
 /* Scrapbook Card */
 .scrapbook-card {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border: 2px solid #554564;
   border-radius: 1.25rem;
-  box-shadow: 4px 4px 0px #DCCEFF;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 4px 4px 0px #dcceff;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .scrapbook-card:hover {
-  box-shadow: 5px 5px 0px #B7A3D6;
+  box-shadow: 5px 5px 0px #b7a3d6;
 }
 
 /* Sticker badge */
@@ -102,7 +112,9 @@
 
 /* Subtle reduced-motion media query */
 @media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
+  *,
+  ::before,
+  ::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

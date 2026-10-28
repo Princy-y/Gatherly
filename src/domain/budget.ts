@@ -1,7 +1,7 @@
 import { Expense, BudgetSummary, ExpenseCategory, ExpensePriority } from './types';
 
 /** Ratio of budget that must remain for the plan to be considered healthy (10 %). */
-const BUDGET_HEALTHY_BUFFER_RATIO = 0.10;
+const BUDGET_HEALTHY_BUFFER_RATIO = 0.1;
 
 /** Maximum fraction of a preferred expense that can be trimmed via negotiation. */
 const PREFERRED_TRIM_RATIO = 0.25;
@@ -29,10 +29,7 @@ export function calculateBudgetSummary(
 ): BudgetSummary {
   const totalEstimatedPaise = expenses.reduce((sum, e) => sum + (e.estimatedCostPaise || 0), 0);
 
-  const totalActualPaise = expenses.reduce(
-    (sum, e) => sum + (e.actualCostPaise ?? 0),
-    0
-  );
+  const totalActualPaise = expenses.reduce((sum, e) => sum + (e.actualCostPaise ?? 0), 0);
 
   // Effective committed is actual cost if entered, otherwise estimated cost
   const effectiveCommittedPaise = expenses.reduce((sum, e) => sum + getEffectiveCost(e), 0);
@@ -40,10 +37,11 @@ export function calculateBudgetSummary(
   const remainingBudgetPaise = budgetLimitPaise - effectiveCommittedPaise;
   const isOverrun = remainingBudgetPaise < 0;
   const overrunPaise = isOverrun ? Math.abs(remainingBudgetPaise) : 0;
-  
-  const variancePercentage = budgetLimitPaise > 0 
-    ? Math.round(((effectiveCommittedPaise - budgetLimitPaise) / budgetLimitPaise) * 100)
-    : 0;
+
+  const variancePercentage =
+    budgetLimitPaise > 0
+      ? Math.round(((effectiveCommittedPaise - budgetLimitPaise) / budgetLimitPaise) * 100)
+      : 0;
 
   return {
     budgetLimitPaise,
@@ -78,7 +76,10 @@ export function calculateCategoryBreakdown(
   _budgetLimitPaise: number,
   expenses: Expense[]
 ): CategoryBreakdown[] {
-  const map = new Map<ExpenseCategory, { estimated: number; actual: number; effective: number; count: number }>();
+  const map = new Map<
+    ExpenseCategory,
+    { estimated: number; actual: number; effective: number; count: number }
+  >();
 
   for (const exp of expenses) {
     const curr = map.get(exp.category) ?? { estimated: 0, actual: 0, effective: 0, count: 0 };
@@ -98,7 +99,8 @@ export function calculateCategoryBreakdown(
       estimatedPaise: data.estimated,
       actualPaise: data.actual,
       effectivePaise: data.effective,
-      percentageOfTotal: totalEffective > 0 ? Math.round((data.effective / totalEffective) * 100) : 0,
+      percentageOfTotal:
+        totalEffective > 0 ? Math.round((data.effective / totalEffective) * 100) : 0,
       itemCount: data.count,
     });
   }
@@ -127,14 +129,15 @@ export function calculatePriorityBreakdown(
   expenses: Expense[]
 ): PriorityBreakdown[] {
   const priorities: ExpensePriority[] = ['essential', 'preferred', 'optional'];
-  return priorities.map(priority => {
-    const items = expenses.filter(e => e.priority === priority);
+  return priorities.map((priority) => {
+    const items = expenses.filter((e) => e.priority === priority);
     const totalPaise = items.reduce((sum, e) => sum + getEffectiveCost(e), 0);
     return {
       priority,
       totalPaise,
       itemCount: items.length,
-      percentageOfBudget: budgetLimitPaise > 0 ? Math.round((totalPaise / budgetLimitPaise) * 100) : 0,
+      percentageOfBudget:
+        budgetLimitPaise > 0 ? Math.round((totalPaise / budgetLimitPaise) * 100) : 0,
     };
   });
 }
@@ -163,14 +166,19 @@ export function generateDeterministicSavings(
   expenses: Expense[]
 ): DeterministicSavingOption[] {
   const summary = calculateBudgetSummary(budgetLimitPaise, expenses);
-  if (!summary.isOverrun && summary.remainingBudgetPaise > budgetLimitPaise * BUDGET_HEALTHY_BUFFER_RATIO) {
+  if (
+    !summary.isOverrun &&
+    summary.remainingBudgetPaise > budgetLimitPaise * BUDGET_HEALTHY_BUFFER_RATIO
+  ) {
     return []; // Healthy budget buffer — no action needed
   }
 
   const recommendations: DeterministicSavingOption[] = [];
 
   // 1. Identify Optional expenses that can be eliminated (unconfirmed only)
-  const optionalExpenses = expenses.filter(e => e.priority === 'optional' && e.actualCostPaise == null);
+  const optionalExpenses = expenses.filter(
+    (e) => e.priority === 'optional' && e.actualCostPaise == null
+  );
   for (const exp of optionalExpenses) {
     recommendations.push({
       expenseId: exp.id,
@@ -184,7 +192,9 @@ export function generateDeterministicSavings(
   }
 
   // 2. Identify Preferred expenses where a trim can be negotiated (unconfirmed only)
-  const preferredExpenses = expenses.filter(e => e.priority === 'preferred' && e.actualCostPaise == null);
+  const preferredExpenses = expenses.filter(
+    (e) => e.priority === 'preferred' && e.actualCostPaise == null
+  );
   for (const exp of preferredExpenses) {
     const trim = Math.round(exp.estimatedCostPaise * PREFERRED_TRIM_RATIO);
     recommendations.push({

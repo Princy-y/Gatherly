@@ -2,11 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { EventPlan } from '../../domain/types';
 import { getAIProvider } from '../../infrastructure/ai/aiFactory';
 import { InspirationStudioOutput } from '../../infrastructure/ai/aiInterface';
-import {
-  KawaiiBow,
-  KawaiiSparkle,
-  KawaiiBunnyMascot,
-} from './KawaiiDecorations';
+import { KawaiiBow, KawaiiSparkle, KawaiiBunnyMascot } from './KawaiiDecorations';
 import {
   Palette,
   Utensils,
@@ -166,9 +162,7 @@ export const InspirationStudioTab: React.FC<InspirationStudioTabProps> = ({ plan
             <div className="scrapbook-card p-5 bg-iceBlue-50 flex flex-col">
               <div className="flex items-center gap-2 mb-3">
                 <PartyPopper className="w-4 h-4 text-plum" />
-                <h3 className="font-heading font-bold text-base text-plum">
-                  Activity Suggestions
-                </h3>
+                <h3 className="font-heading font-bold text-base text-plum">Activity Suggestions</h3>
               </div>
               <ul className="space-y-2.5 text-xs text-plum font-medium">
                 {inspiration.activities.map((act, i) => (

@@ -64,7 +64,7 @@ describe('Deterministic Timeline & Dependency Engine', () => {
 
     const validation = validateDependencies(tasks);
     expect(validation.valid).toBe(false);
-    expect(validation.errors.some(e => e.includes('Circular dependency'))).toBe(true);
+    expect(validation.errors.some((e) => e.includes('Circular dependency'))).toBe(true);
   });
 
   it('computes topological order when dependency graph is acyclic (DAG)', () => {
@@ -99,7 +99,7 @@ describe('Deterministic Timeline & Dependency Engine', () => {
     ];
 
     const ordered = getTopologicalOrder(tasks);
-    const orderIds = ordered.map(t => t.id);
+    const orderIds = ordered.map((t) => t.id);
 
     expect(orderIds.indexOf('finalize-guestlist')).toBeLessThan(orderIds.indexOf('send-invites'));
     expect(orderIds.indexOf('send-invites')).toBeLessThan(orderIds.indexOf('collect-rsvps'));
@@ -137,11 +137,11 @@ describe('Deterministic Timeline & Dependency Engine', () => {
     const shifted = shiftTaskDates(tasks, '2026-12-01', '2026-12-11');
 
     // Completed task retained original date
-    const completed = shifted.find(t => t.id === 't-done');
+    const completed = shifted.find((t) => t.id === 't-done');
     expect(completed?.dueDate).toBe('2026-11-01');
 
     // Pending task shifted by +10 days
-    const pending = shifted.find(t => t.id === 't-pending');
+    const pending = shifted.find((t) => t.id === 't-pending');
     expect(pending?.dueDate).toBe('2026-11-20');
   });
 

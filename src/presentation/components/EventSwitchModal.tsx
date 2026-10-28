@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { LocalStorageAdapter } from '../../infrastructure/storage/localStorageAdapter';
 import { EventSummaryRecord } from '../../infrastructure/storage/storageInterface';
-import {
-  KawaiiBunnyMascot,
-} from './KawaiiDecorations';
+import { KawaiiBunnyMascot } from './KawaiiDecorations';
 import { Plus, Trash2, X, Upload } from 'lucide-react';
 
 const storage = new LocalStorageAdapter();
@@ -58,9 +56,7 @@ export const EventSwitchModal: React.FC<EventSwitchModalProps> = ({
         <div className="flex justify-between items-center mb-4 pb-2 border-b border-plum/20">
           <div className="flex items-center gap-2">
             <KawaiiBunnyMascot size={32} />
-            <h2 className="font-heading font-bold text-xl text-plum">
-              Your Saved Events
-            </h2>
+            <h2 className="font-heading font-bold text-xl text-plum">Your Saved Events</h2>
           </div>
           <button
             onClick={onClose}
@@ -77,7 +73,7 @@ export const EventSwitchModal: React.FC<EventSwitchModalProps> = ({
               No saved events found. Click "Create New Event" below!
             </div>
           ) : (
-            events.map(ev => {
+            events.map((ev) => {
               const isCurrent = ev.id === currentEventId;
               return (
                 <div
@@ -110,7 +106,7 @@ export const EventSwitchModal: React.FC<EventSwitchModalProps> = ({
 
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={e => handleDelete(e, ev.id)}
+                      onClick={(e) => handleDelete(e, ev.id)}
                       className="p-1.5 text-plum-light hover:text-red-700 hover:bg-blush-100 rounded"
                       title="Delete event"
                     >

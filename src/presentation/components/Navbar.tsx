@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  KawaiiBow,
-  KawaiiSparkle,
-  KawaiiBunnyMascot,
-} from './KawaiiDecorations';
+import { KawaiiBow, KawaiiSparkle, KawaiiBunnyMascot } from './KawaiiDecorations';
 import {
   getCurrentAIProviderType,
   setAIProviderType,
@@ -96,7 +92,11 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
         {/* Brand */}
         <div className="flex items-center gap-3">
-          <div className="relative group cursor-pointer" onClick={onNewEvent} title="Create or Switch Event">
+          <div
+            className="relative group cursor-pointer"
+            onClick={onNewEvent}
+            title="Create or Switch Event"
+          >
             <div className="w-11 h-11 bg-blush-200 border-2 border-plum rounded-2xl flex items-center justify-center shadow-kawaii-sm group-hover:rotate-6 transition-transform">
               <KawaiiBunnyMascot size={32} />
             </div>
@@ -109,9 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="font-heading font-bold text-xl tracking-tight text-plum">
                 Gatherly<span className="text-lavender-300 font-extrabold">AI</span>
               </span>
-              <span className="kawaii-badge bg-blush-100 text-plum text-xs">
-                ✨ Kawaii Studio
-              </span>
+              <span className="kawaii-badge bg-blush-100 text-plum text-xs">✨ Kawaii Studio</span>
             </div>
             <p className="text-xs text-plum-light font-medium truncate max-w-[220px] sm:max-w-xs">
               {eventTitle ? `🌸 ${eventTitle} (${eventType})` : 'Constraint-Aware Event Planning'}
@@ -139,7 +137,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               }`}
             />
             <span className="font-semibold">
-              {providerType === 'local' ? 'Local Ollama (qwen2.5:3b)' : 'Demo Engine (Offline Safe)'}
+              {providerType === 'local'
+                ? 'Local Ollama (qwen2.5:3b)'
+                : 'Demo Engine (Offline Safe)'}
             </span>
             <span className="text-[10px] bg-white/70 px-1 rounded border border-plum/30">
               Switch
@@ -179,7 +179,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Navigation Tabs */}
       <nav aria-label="Main Navigation" className="max-w-7xl mx-auto px-4 sm:px-6">
         <ul className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
-          {navItems.map(item => {
+          {navItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
               <li key={item.id} className="shrink-0">

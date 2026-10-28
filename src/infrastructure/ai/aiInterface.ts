@@ -130,7 +130,16 @@ export interface InspirationParams {
 
 export interface IAIProvider {
   getStatus(): Promise<AIProviderStatus>;
-  generatePlan(params: PlanGenerationParams, signal?: AbortSignal): Promise<{ data: AIGeneratedPlanOutput; latencyMs: number }>;
-  revisePlan(params: PlanRevisionParams, signal?: AbortSignal): Promise<{ data: AIPlanRevisionProposal; latencyMs: number }>;
-  generateInspiration(params: InspirationParams, signal?: AbortSignal): Promise<{ data: InspirationStudioOutput; latencyMs: number }>;
+  generatePlan(
+    params: PlanGenerationParams,
+    signal?: AbortSignal
+  ): Promise<{ data: AIGeneratedPlanOutput; latencyMs: number }>;
+  revisePlan(
+    params: PlanRevisionParams,
+    signal?: AbortSignal
+  ): Promise<{ data: AIPlanRevisionProposal; latencyMs: number }>;
+  generateInspiration(
+    params: InspirationParams,
+    signal?: AbortSignal
+  ): Promise<{ data: InspirationStudioOutput; latencyMs: number }>;
 }
