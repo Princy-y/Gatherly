@@ -43,7 +43,9 @@ jobs:
         run: pip install -r backend/requirements.txt
 
       - name: Run Backend Tests
-        run: pytest backend/tests/test_main.py
+        run: python -m pytest backend/tests/test_main.py
+        env:
+          PYTHONPATH: .
 
       - name: Repository Size Audit (< 10MB)
         run: npm run audit:size
