@@ -7,6 +7,69 @@ import { paiseToRupees, parseRupeesInput } from '../../../domain/currency';
 import { getAIProvider } from '../../../infrastructure/ai/aiFactory';
 import { AIPlanRevisionProposal } from '../../../infrastructure/ai/aiInterface';
 
+function applyProposalChanges(
+  plan: EventPlan,
+  simBudgetPaise: number,
+  simGuestCount: number,
+  simEventDate: string,
+  aiProposal: AIPlanRevisionProposal | null
+): EventPlan {
+  let updatedTasks = plan.tasks;
+  if (simEventDate !== plan.eventDate) {
+    updatedTasks = shiftTaskDates(plan.tasks, plan.eventDate, simEventDate);
+  }
+
+  if (aiProposal?.proposedTimelineAdjustments) {
+    for (const adj of aiProposal.proposedTimelineAdjustments) {
+      if (adj.taskId) {
+        updatedTasks = updatedTasks.map((t) =>
+          t.id === adj.taskId ? { ...t, dueDate: adj.newDueDate } : t
+        );
+      }
+    }
+  }
+
+  let updatedExpenses = [...plan.expenses];
+  if (aiProposal?.proposedExpenseAdjustments) {
+    for (const adj of aiProposal.proposedExpenseAdjustments) {
+      if (adj.expenseId) {
+        updatedExpenses = updatedExpenses.map((e) =>
+          e.id === adj.expenseId
+            ? { ...e, estimatedCostPaise: adj.newEstimatedCostPaise, priority: adj.priority }
+            : e
+        );
+      } else {
+        const existing = updatedExpenses.find(
+          (e) =>
+            e.category === adj.category || e.name.toLowerCase().includes(adj.name.toLowerCase())
+        );
+        if (existing && existing.actualCostPaise === null) {
+          updatedExpenses = updatedExpenses.map((e) =>
+            e.id === existing.id
+              ? {
+                  ...e,
+                  name: adj.name,
+                  estimatedCostPaise: adj.newEstimatedCostPaise,
+                  priority: adj.priority,
+                }
+              : e
+          );
+        }
+      }
+    }
+  }
+
+  return {
+    ...plan,
+    budgetLimitPaise: simBudgetPaise,
+    guestCount: simGuestCount,
+    eventDate: simEventDate,
+    expenses: updatedExpenses,
+    tasks: updatedTasks,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
 export function useWhatIfSimulator(
   plan: EventPlan,
   onApplyPlanRevision: (updatedPlan: EventPlan) => void
@@ -90,61 +153,13 @@ export function useWhatIfSimulator(
   };
 
   const handleApplyChanges = () => {
-    let updatedTasks = plan.tasks;
-    if (simEventDate !== plan.eventDate) {
-      updatedTasks = shiftTaskDates(plan.tasks, plan.eventDate, simEventDate);
-    }
-
-    if (aiProposal?.proposedTimelineAdjustments) {
-      for (const adj of aiProposal.proposedTimelineAdjustments) {
-        if (adj.taskId) {
-          updatedTasks = updatedTasks.map((t) =>
-            t.id === adj.taskId ? { ...t, dueDate: adj.newDueDate } : t
-          );
-        }
-      }
-    }
-
-    let updatedExpenses = [...plan.expenses];
-    if (aiProposal?.proposedExpenseAdjustments) {
-      for (const adj of aiProposal.proposedExpenseAdjustments) {
-        if (adj.expenseId) {
-          updatedExpenses = updatedExpenses.map((e) =>
-            e.id === adj.expenseId
-              ? { ...e, estimatedCostPaise: adj.newEstimatedCostPaise, priority: adj.priority }
-              : e
-          );
-        } else {
-          const existing = updatedExpenses.find(
-            (e) =>
-              e.category === adj.category || e.name.toLowerCase().includes(adj.name.toLowerCase())
-          );
-          if (existing && existing.actualCostPaise === null) {
-            updatedExpenses = updatedExpenses.map((e) =>
-              e.id === existing.id
-                ? {
-                    ...e,
-                    name: adj.name,
-                    estimatedCostPaise: adj.newEstimatedCostPaise,
-                    priority: adj.priority,
-                  }
-                : e
-            );
-          }
-        }
-      }
-    }
-
-    const updatedPlan: EventPlan = {
-      ...plan,
-      budgetLimitPaise: simBudgetPaise,
-      guestCount: simGuestCount,
-      eventDate: simEventDate,
-      expenses: updatedExpenses,
-      tasks: updatedTasks,
-      updatedAt: new Date().toISOString(),
-    };
-
+    const updatedPlan = applyProposalChanges(
+      plan,
+      simBudgetPaise,
+      simGuestCount,
+      simEventDate,
+      aiProposal
+    );
     onApplyPlanRevision(updatedPlan);
     setIsSuccessApplied(true);
 

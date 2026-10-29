@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { EventPlan } from './domain/types';
-import { LocalStorageAdapter } from './infrastructure/storage/localStorageAdapter';
-import { Navbar, ActiveTab } from './presentation/components/Navbar';
+import { Navbar } from './presentation/components/Navbar';
 import { DashboardTab } from './presentation/components/DashboardTab';
 import { BudgetStudioTab } from './presentation/components/BudgetStudioTab';
 import { TimelineTab } from './presentation/components/TimelineTab';
@@ -10,12 +9,10 @@ import { InspirationStudioTab } from './presentation/components/InspirationStudi
 import { WhatIfSimulatorTab } from './presentation/components/WhatIfSimulatorTab';
 import { EventWizardModal } from './presentation/components/EventWizardModal';
 import { EventSwitchModal } from './presentation/components/EventSwitchModal';
-import { KawaiiBunnyMascot } from './presentation/components/KawaiiDecorations';
 import { ErrorBoundary } from './presentation/components/ErrorBoundary';
+import { AppFooter } from './presentation/components/AppFooter';
+import { useAppEvents } from './presentation/hooks/useAppEvents';
 
-const storage = new LocalStorageAdapter();
-
-// Default starter event plan so evaluators immediately see rich functional data
 const DEFAULT_INITIAL_PLAN: EventPlan = {
   id: 'starter-wedding-plan',
   schemaVersion: 1,
@@ -186,98 +183,20 @@ const DEFAULT_INITIAL_PLAN: EventPlan = {
 };
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
-  const [currentPlan, setCurrentPlan] = useState<EventPlan>(DEFAULT_INITIAL_PLAN);
-  const [isWizardOpen, setIsWizardOpen] = useState(false);
-  const [isSwitchModalOpen, setIsSwitchModalOpen] = useState(false);
-  /** Transient toast notification: null when hidden, string message when visible. */
-  const [notification, setNotification] = useState<{ message: string; isError: boolean } | null>(
-    null
-  );
-
-  const showNotification = (message: string, isError = false) => {
-    setNotification({ message, isError });
-    setTimeout(() => setNotification(null), 4000);
-  };
-
-  // Initialize and load saved plans
-  useEffect(() => {
-    const initialize = async () => {
-      try {
-        const events = await storage.listEvents();
-        if (events.length > 0) {
-          const loaded = await storage.loadEvent(events[0].id);
-          if (loaded) {
-            setCurrentPlan(loaded);
-            return;
-          }
-        }
-        // If storage is fresh, persist default initial plan
-        await storage.saveEvent(DEFAULT_INITIAL_PLAN);
-      } catch (err) {
-        console.error('Storage initialization notice:', err);
-      }
-    };
-    initialize();
-  }, []);
-
-  const handleSavePlan = async (updated: EventPlan) => {
-    setCurrentPlan(updated);
-    try {
-      await storage.saveEvent(updated);
-    } catch (err) {
-      console.error('Failed to persist plan:', err);
-    }
-  };
-
-  const handleSelectEvent = async (id: string) => {
-    const loaded = await storage.loadEvent(id);
-    if (loaded) {
-      setCurrentPlan(loaded);
-      setActiveTab('dashboard');
-    }
-  };
-
-  const handleExportJson = async () => {
-    try {
-      const jsonStr = await storage.exportEventJson(currentPlan.id);
-      const blob = new Blob([jsonStr], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `gatherly-event-${currentPlan.id}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Export failed.';
-      showNotification(message, true);
-    }
-  };
-
-  const handleImportJson = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json,application/json';
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async (ev) => {
-        try {
-          const content = ev.target?.result as string;
-          const imported = await storage.importEventJson(content);
-          setCurrentPlan(imported);
-          setActiveTab('dashboard');
-          showNotification(`Successfully imported: "${imported.title}"! ✅`);
-        } catch (err: unknown) {
-          const message = err instanceof Error ? err.message : 'Import failed.';
-          showNotification(message, true);
-        }
-      };
-      reader.readAsText(file);
-    };
-    input.click();
-  };
+  const {
+    activeTab,
+    setActiveTab,
+    currentPlan,
+    isWizardOpen,
+    setIsWizardOpen,
+    isSwitchModalOpen,
+    setIsSwitchModalOpen,
+    notification,
+    handleSavePlan,
+    handleSelectEvent,
+    handleExportJson,
+    handleImportJson,
+  } = useAppEvents(DEFAULT_INITIAL_PLAN);
 
   return (
     <div className="min-h-screen flex flex-col bg-cream-100 text-plum">
@@ -292,7 +211,7 @@ export const App: React.FC = () => {
         onImport={handleImportJson}
       />
 
-      {/* Inline toast notification (replaces browser alert) */}
+      {/* Inline toast notification */}
       {notification && (
         <div
           role="alert"
@@ -358,21 +277,7 @@ export const App: React.FC = () => {
         onImportJson={handleImportJson}
       />
 
-      {/* Kawaii Scrapbook Footer */}
-      <footer className="bg-cream-200 border-t-2 border-plum py-6 px-4 text-center text-xs text-plum-light">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2 font-bold text-plum">
-            <KawaiiBunnyMascot size={22} />
-            <span>Gatherly AI • Kawaii Event Planning Assistant</span>
-          </div>
-          <div className="flex items-center gap-4 text-xs font-semibold">
-            <span>✨ Zero-Hallucination Math</span>
-            <span>🎀 Constraint-Aware Replanning</span>
-            <span>🔒 Safe Browser Storage</span>
-            <span>📦 &lt; 10 MB Verified Repo</span>
-          </div>
-        </div>
-      </footer>
+      <AppFooter />
     </div>
   );
 };

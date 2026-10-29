@@ -95,18 +95,12 @@ export function validateDependencies(tasks: Task[]): { valid: boolean; errors: s
   };
 }
 
-/**
- * Computes topological ordering of tasks respecting dependencies.
- * If cycles are present, falls back to due date ordering and reports safe default.
- */
-export function getTopologicalOrder(tasks: Task[]): Task[] {
-  const cycle = detectCycle(tasks);
-  if (cycle.hasCycle) {
-    // If cycle detected, sort by due date safely
-    return [...tasks].sort((a, b) => a.dueDate.localeCompare(b.dueDate));
-  }
+interface DependencyGraph {
+  inDegree: Map<string, number>;
+  adj: Map<string, string[]>;
+}
 
-  const taskMap = new Map<string, Task>(tasks.map((t) => [t.id, t]));
+function buildDependencyGraph(tasks: Task[]): DependencyGraph {
   const inDegree = new Map<string, number>();
   const adj = new Map<string, string[]>();
 
@@ -123,6 +117,23 @@ export function getTopologicalOrder(tasks: Task[]): Task[] {
       }
     }
   }
+
+  return { inDegree, adj };
+}
+
+/**
+ * Computes topological ordering of tasks respecting dependencies.
+ * If cycles are present, falls back to due date ordering and reports safe default.
+ */
+export function getTopologicalOrder(tasks: Task[]): Task[] {
+  const cycle = detectCycle(tasks);
+  if (cycle.hasCycle) {
+    // If cycle detected, sort by due date safely
+    return [...tasks].sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  }
+
+  const taskMap = new Map<string, Task>(tasks.map((t) => [t.id, t]));
+  const { inDegree, adj } = buildDependencyGraph(tasks);
 
   const queue: string[] = [];
   for (const [id, deg] of inDegree.entries()) {

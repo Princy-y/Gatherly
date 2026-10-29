@@ -3,6 +3,7 @@ import confetti from 'canvas-confetti';
 import { EventType, EventPlan } from '../../../domain/types';
 import { rupeesToPaise } from '../../../domain/currency';
 import { getAIProvider } from '../../../infrastructure/ai/aiFactory';
+import { AIGeneratedPlanOutput } from '../../../infrastructure/ai/aiInterface';
 
 export const PRIORITY_OPTIONS = [
   'Venue Atmosphere',
@@ -14,6 +15,129 @@ export const PRIORITY_OPTIONS = [
   'Sustainable / Eco-Friendly',
   'Cultural Rituals',
 ];
+
+interface SampleTemplateData {
+  title: string;
+  location: string;
+  guestCount: number;
+  budgetRupees: string;
+  priorities: string[];
+  preferences: string;
+  accessibilityRequirements: string;
+}
+
+const SAMPLE_TEMPLATES: Record<EventType, SampleTemplateData> = {
+  wedding: {
+    title: 'Rohan & Meera’s Whimsical Pastel Wedding',
+    location: 'Jaipur & Udaipur',
+    guestCount: 150,
+    budgetRupees: '1500000',
+    priorities: ['Venue Atmosphere', 'Catering Quality', 'Photography & Film', 'Floral Decor'],
+    preferences:
+      'Pastel mandap with lavender & blush florals, candid photography, fusion live counters.',
+    accessibilityRequirements: 'Wheelchair ramp for lawn area and elderly seating.',
+  },
+  birthday: {
+    title: 'Zoya’s Kawaii Sugar Wonderland 7th Birthday',
+    location: 'Mumbai',
+    guestCount: 40,
+    budgetRupees: '75000',
+    priorities: ['Floral Decor', 'Live Entertainment', 'Guest Comfort'],
+    preferences: 'Kawaii pastel balloon arch, DIY cupcake decor station, polaroid memories.',
+    accessibilityRequirements: 'Nut-free catering for children with allergies.',
+  },
+  community: {
+    title: 'Oakridge Green Community Spring Mela',
+    location: 'Bengaluru',
+    guestCount: 250,
+    budgetRupees: '150000',
+    priorities: ['Sustainable / Eco-Friendly', 'Live Entertainment', 'Guest Comfort'],
+    preferences:
+      'Zero single-use plastics, local artisan food kiosks, acoustic neighborhood open-mic.',
+    accessibilityRequirements:
+      'Signage in English & Kannada, accessible parking near community hall.',
+  },
+};
+
+interface BuildPlanArgs {
+  title: string;
+  eventType: EventType;
+  location: string;
+  eventDate: string;
+  budgetLimitPaise: number;
+  guestCount: number;
+  selectedPriorities: string[];
+  preferences: string;
+  accessibilityRequirements: string;
+  aiPlan: AIGeneratedPlanOutput;
+}
+
+function buildEventPlanFromAiOutput(args: BuildPlanArgs): EventPlan {
+  const eventId = `event-${Date.now()}`;
+  const now = new Date().toISOString();
+
+  const expenses = args.aiPlan.recommendedExpenses.map((exp, idx) => ({
+    id: `exp-${Date.now()}-${idx}`,
+    category: exp.category,
+    name: exp.name,
+    estimatedCostPaise: exp.estimatedCostPaise,
+    actualCostPaise: null,
+    priority: exp.priority,
+    notes: exp.notes,
+  }));
+
+  const targetDate = new Date(args.eventDate + 'T00:00:00Z');
+  const tasks = args.aiPlan.recommendedTasks.map((t, idx) => {
+    const taskDue = new Date(targetDate);
+    taskDue.setDate(taskDue.getDate() - t.daysBeforeEvent);
+    const today = new Date();
+    const finalDue = taskDue < today ? today : taskDue;
+
+    return {
+      id: `task-${Date.now()}-${idx}`,
+      title: t.title,
+      description: t.description,
+      dueDate: finalDue.toISOString().split('T')[0],
+      status: 'todo' as const,
+      priority: t.priority,
+      dependencies: [] as string[],
+      vendorCategory: t.vendorCategory,
+    };
+  });
+
+  if (tasks.length > 2) {
+    tasks[1].dependencies = [tasks[0].id];
+  }
+
+  const vendors = args.aiPlan.recommendedVendors.map((v, idx) => ({
+    id: `vendor-${Date.now()}-${idx}`,
+    category: v.category,
+    title: v.title,
+    requirements: v.requirements,
+    bookingStatus: 'not_started' as const,
+    estimatedCostPaise: v.estimatedCostPaise,
+  }));
+
+  return {
+    id: eventId,
+    schemaVersion: 1,
+    title: args.title,
+    eventType: args.eventType,
+    location: args.location,
+    eventDate: args.eventDate,
+    currency: 'INR',
+    budgetLimitPaise: args.budgetLimitPaise,
+    guestCount: args.guestCount,
+    priorities: args.selectedPriorities,
+    preferences: args.preferences,
+    accessibilityRequirements: args.accessibilityRequirements || undefined,
+    expenses,
+    tasks,
+    vendors,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
 
 export function useEventWizard(onSavePlan: (plan: EventPlan) => void, onClose: () => void) {
   const [eventType, setEventType] = useState<EventType>('wedding');
@@ -46,42 +170,14 @@ export function useEventWizard(onSavePlan: (plan: EventPlan) => void, onClose: (
 
   const loadSampleTemplate = (type: EventType) => {
     setEventType(type);
-    if (type === 'wedding') {
-      setTitle('Rohan & Meera’s Whimsical Pastel Wedding');
-      setLocation('Jaipur & Udaipur');
-      setGuestCount(150);
-      setBudgetRupees('1500000');
-      setSelectedPriorities([
-        'Venue Atmosphere',
-        'Catering Quality',
-        'Photography & Film',
-        'Floral Decor',
-      ]);
-      setPreferences(
-        'Pastel mandap with lavender & blush florals, candid photography, fusion live counters.'
-      );
-      setAccessibilityRequirements('Wheelchair ramp for lawn area and elderly seating.');
-    } else if (type === 'birthday') {
-      setTitle('Zoya’s Kawaii Sugar Wonderland 7th Birthday');
-      setLocation('Mumbai');
-      setGuestCount(40);
-      setBudgetRupees('75000');
-      setSelectedPriorities(['Floral Decor', 'Live Entertainment', 'Guest Comfort']);
-      setPreferences('Kawaii pastel balloon arch, DIY cupcake decor station, polaroid memories.');
-      setAccessibilityRequirements('Nut-free catering for children with allergies.');
-    } else {
-      setTitle('Oakridge Green Community Spring Mela');
-      setLocation('Bengaluru');
-      setGuestCount(250);
-      setBudgetRupees('150000');
-      setSelectedPriorities(['Sustainable / Eco-Friendly', 'Live Entertainment', 'Guest Comfort']);
-      setPreferences(
-        'Zero single-use plastics, local artisan food kiosks, acoustic neighborhood open-mic.'
-      );
-      setAccessibilityRequirements(
-        'Signage in English & Kannada, accessible parking near community hall.'
-      );
-    }
+    const tmpl = SAMPLE_TEMPLATES[type];
+    setTitle(tmpl.title);
+    setLocation(tmpl.location);
+    setGuestCount(tmpl.guestCount);
+    setBudgetRupees(tmpl.budgetRupees);
+    setSelectedPriorities(tmpl.priorities);
+    setPreferences(tmpl.preferences);
+    setAccessibilityRequirements(tmpl.accessibilityRequirements);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -119,70 +215,18 @@ export function useEventWizard(onSavePlan: (plan: EventPlan) => void, onClose: (
         accessibilityRequirements,
       });
 
-      const eventId = `event-${Date.now()}`;
-      const now = new Date().toISOString();
-
-      const expenses = aiPlan.recommendedExpenses.map((exp, idx) => ({
-        id: `exp-${Date.now()}-${idx}`,
-        category: exp.category,
-        name: exp.name,
-        estimatedCostPaise: exp.estimatedCostPaise,
-        actualCostPaise: null,
-        priority: exp.priority,
-        notes: exp.notes,
-      }));
-
-      const targetDate = new Date(eventDate + 'T00:00:00Z');
-      const tasks = aiPlan.recommendedTasks.map((t, idx) => {
-        const taskDue = new Date(targetDate);
-        taskDue.setDate(taskDue.getDate() - t.daysBeforeEvent);
-        const today = new Date();
-        const finalDue = taskDue < today ? today : taskDue;
-
-        return {
-          id: `task-${Date.now()}-${idx}`,
-          title: t.title,
-          description: t.description,
-          dueDate: finalDue.toISOString().split('T')[0],
-          status: 'todo' as const,
-          priority: t.priority,
-          dependencies: [] as string[],
-          vendorCategory: t.vendorCategory,
-        };
-      });
-
-      if (tasks.length > 2) {
-        tasks[1].dependencies = [tasks[0].id];
-      }
-
-      const vendors = aiPlan.recommendedVendors.map((v, idx) => ({
-        id: `vendor-${Date.now()}-${idx}`,
-        category: v.category,
-        title: v.title,
-        requirements: v.requirements,
-        bookingStatus: 'not_started' as const,
-        estimatedCostPaise: v.estimatedCostPaise,
-      }));
-
-      const newPlan: EventPlan = {
-        id: eventId,
-        schemaVersion: 1,
+      const newPlan = buildEventPlanFromAiOutput({
         title,
         eventType,
         location,
         eventDate,
-        currency: 'INR',
         budgetLimitPaise,
         guestCount,
-        priorities: selectedPriorities,
+        selectedPriorities,
         preferences,
-        accessibilityRequirements: accessibilityRequirements || undefined,
-        expenses,
-        tasks,
-        vendors,
-        createdAt: now,
-        updatedAt: now,
-      };
+        accessibilityRequirements,
+        aiPlan,
+      });
 
       try {
         confetti({

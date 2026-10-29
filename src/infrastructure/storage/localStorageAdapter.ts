@@ -194,3 +194,6 @@ export class LocalStorageAdapter implements IEventStorage {
     storage.setItem(INDEX_KEY, JSON.stringify(list));
   }
 }
+
+/** Shared singleton instance used throughout the application. */
+export const storage = new LocalStorageAdapter();

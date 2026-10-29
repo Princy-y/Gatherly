@@ -33,6 +33,8 @@ export default [
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'no-undef': 'off', // TypeScript handles undefined symbols better than ESLint
+      'max-lines-per-function': ['warn', { max: 150, skipBlankLines: true, skipComments: true }],
+      complexity: ['warn', 15],
     },
   },
   // Node.js scripts — node environment
